@@ -1,0 +1,50 @@
+# created with the help of https://editor.swagger.io/
+
+openapi: 3.0.1
+info:
+  title: Agnes UI
+  version: 1.0.0
+servers:
+- url: /api
+paths:
+  /release:
+    post:
+      tags:
+      - release
+      summary: Add a new release
+      operationId: add
+      requestBody:
+        description: The release to be created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Release'
+        required: true
+      responses:
+        200:
+          description: Task started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskStartedResponse'
+        405:
+          description: Invalid input
+          content: {}
+          
+components:
+  schemas:
+    TaskStartedResponse:
+      type: object
+      properties:
+        taskId:
+          type: string
+          format: guid
+    Release:
+      type: object
+      properties:
+        commit:
+          type: string
+        description:
+          type: string
+        name:
+          type: string
