@@ -18,7 +18,7 @@
         "symfony/yaml": "4.3.*"
     },
     "require-dev": {
-        "famoser/agnes": "^0.5.1"
+        "famoser/agnes": "^0.6"
     },
     "config": {
         "preferred-install": {

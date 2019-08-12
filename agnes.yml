@@ -18,7 +18,7 @@ application:
   scripts:
     release:
       - composer install --verbose --prefer-dist --no-interaction --no-dev --optimize-autoloader --no-scripts
-      - cd assets && yarn build
+      - cd assets && yarn install && yarn build
       - rm -rf assets
 
     deploy:
@@ -36,14 +36,14 @@ application:
       - php bin/console doctrine:fixtures:load -n
 
 servers:
-  local:
+  hostpoint:
     connection:
       type: ssh
       destination: '%env(SERVER_DESTINATION)%'
-    path: .release
+    path: '%env(SERVER_PATH)%'
     keep_releases: 2
     environments:
-      agnes.ch: [production, education, staging, dev]
+      agnes.famoser.ch: [production, dev]
 
 policies:
   strategy: unanimous # all matching policies must be valid
@@ -53,18 +53,17 @@ policies:
     - type: stage_write_up
       layers:
         0: [dev]
-        1: [staging]
-        2: [production, education]
+        1: [production]
 
     - type: release_whitelist
       filter:
-        stages: [production, education, staging]
+        stages: [production]
       commitishes: [master]
 
   copy_shared:
     - type: stage_write_down
       layers:
-        0: [dev, staging, education]
+        0: [dev]
         1: [production]
     - type: same_release
 

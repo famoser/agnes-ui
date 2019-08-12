@@ -11,3 +11,7 @@ This UI allows to use the agnes capabilities efficiently. Primary goals are:
 ## Setup
 
 Make sure the server where the tool is installed has ssh access to the environments you configured.
+
+## Developer tools
+
+- for development, install `symfony-cli` and `vue-cli` (both in arch AUR)

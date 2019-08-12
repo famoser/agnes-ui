@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6575ce43d5aab5424b432f9737bf0293",
+    "content-hash": "9c2d5bbb2ee802c994add4812bbee019",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -4241,16 +4241,16 @@
         },
         {
             "name": "famoser/agnes",
-            "version": "v0.5.1",
+            "version": "v0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/famoser/agnes.git",
-                "reference": "30d2eaac5a35fcdf0ca62f21ef8de648d598330d"
+                "reference": "edbc187f14c12de6ac3f455779f735bf86b0581d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/famoser/agnes/zipball/30d2eaac5a35fcdf0ca62f21ef8de648d598330d",
-                "reference": "30d2eaac5a35fcdf0ca62f21ef8de648d598330d",
+                "url": "https://api.github.com/repos/famoser/agnes/zipball/edbc187f14c12de6ac3f455779f735bf86b0581d",
+                "reference": "edbc187f14c12de6ac3f455779f735bf86b0581d",
                 "shasum": ""
             },
             "require": {
@@ -4287,7 +4287,7 @@
                 }
             ],
             "description": "Creates & deploys releases safely to various environments.",
-            "time": "2019-08-12T06:53:22+00:00"
+            "time": "2019-08-12T09:42:33+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
