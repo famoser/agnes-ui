@@ -1,6 +1,8 @@
 .idea
 vendor
 var
+
+.env*
 ###> symfony/phpunit-bridge ###
 .phpunit
 .phpunit.result.cache
@@ -9,3 +11,6 @@ var
 
 # vuejs build
 public/*
+
+# agnes build
+.build
