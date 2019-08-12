@@ -5,11 +5,7 @@
         <span>Agnes UI</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn
-        @click="openReleaseWindow"
-      >
-       Create release
-      </v-btn>
+      <CreateReleaseDialog>Create release</CreateReleaseDialog>
     </v-app-bar>
 
     <v-content>
@@ -19,17 +15,18 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+    import Vue from 'vue';
+    import HelloWorld from './components/HelloWorld.vue';
+    import CreateReleaseDialog from "@/components/CreateReleaseDialog.vue";
 
-
-export default Vue.extend({
-  name: 'App',
-  components: {
-    HelloWorld,
-  },
-  data: () => ({
-    //
-  }),
-});
+    export default Vue.extend({
+        name: 'App',
+        components: {
+            CreateReleaseDialog,
+            HelloWorld,
+        },
+        data: () => ({
+            dialog: false
+        }),
+    });
 </script>

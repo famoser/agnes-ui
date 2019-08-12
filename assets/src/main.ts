@@ -5,7 +5,7 @@ import App from "./App.vue";
 import 'vuetify/dist/vuetify.min.css'
 import vuetify from './plugins/vuetify';
 
-Vue.use(Vuetify)
+Vue.use(Vuetify);
 Vue.config.productionTip = false;
 
 new Vue({

@@ -1,9 +1,6 @@
 <template>
   <v-container>
-    <v-layout
-      text-center
-      wrap
-    >
+    <v-layout text-center wrap>
       <v-flex mb-4>
         <h1 class="display-2 font-weight-bold mb-3">
           Welcome!
@@ -20,20 +17,19 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import { Component, Prop, Vue } from "vue-property-decorator";
+    import {Component, Prop, Vue} from "vue-property-decorator";
 
-@Component
-export default class HelloWorld extends Vue {
-  @Prop() private msg!: string;
-  public isOpen = false;
+    @Component
+    export default class HelloWorld extends Vue {
+        @Prop() private msg!: string;
+        public isOpen = false;
 
-  openNow() {
-    this.isOpen = true;
-  }
+        openNow() {
+            this.isOpen = true;
+        }
 
-  get openText() {
-    return this.isOpen ? "yes" : "no";
-  }
-}
+        get openText() {
+            return this.isOpen ? "yes" : "no";
+        }
+    }
 </script>
