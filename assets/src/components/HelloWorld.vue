@@ -9,7 +9,7 @@
           click me
         </v-btn>
         <p>
-          {{openText}}
+          {{ openText }}
         </p>
       </v-flex>
     </v-layout>
@@ -17,19 +17,19 @@
 </template>
 
 <script lang="ts">
-    import {Component, Prop, Vue} from "vue-property-decorator";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
-    @Component
-    export default class HelloWorld extends Vue {
-        @Prop() private msg!: string;
-        public isOpen = false;
+@Component
+export default class HelloWorld extends Vue {
+  @Prop() private msg!: string;
+  public isOpen = false;
 
-        openNow() {
-            this.isOpen = true;
-        }
+  openNow() {
+    this.isOpen = true;
+  }
 
-        get openText() {
-            return this.isOpen ? "yes" : "no";
-        }
-    }
+  get openText() {
+    return this.isOpen ? "yes" : "no";
+  }
+}
 </script>
