@@ -9,13 +9,13 @@ Api/ApiServer.php
 autoload.php
 composer.json
 # Controller/Controller.php
-DependencyInjection
+DependencyInjection/*
 git_push.sh
 OpenApiServerBundle.php
 phpunit.xml.dist
 pom.xml
 README.md
-Resources
+Resources/*
 !Resources/config/routing.yml
-Service
-Tests
+Service/*
+Tests/*
