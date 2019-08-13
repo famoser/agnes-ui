@@ -4,12 +4,13 @@
 # Use this file to prevent files from being overwritten by the generator.
 # The patterns follow closely to .gitignore or .dockerignore.
 
+.*
 Api/ApiServer.php
 autoload.php
 composer.json
 # Controller/Controller.php
 git_push.sh
-OpenApiServerBundle.php
+OpenAPIServerBundle.php
 phpunit.xml.dist
 pom.xml
 README.md
