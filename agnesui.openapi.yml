@@ -21,28 +21,16 @@ paths:
               $ref: '#/components/schemas/Release'
         required: true
       responses:
-        200:
-          description: Task started
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TaskStartedResponse'
         405:
           description: Invalid input
           content: {}
           
 components:
   schemas:
-    TaskStartedResponse:
-      type: object
-      properties:
-        taskId:
-          type: string
-          format: guid
     Release:
       type: object
       properties:
-        commit:
+        commitish:
           type: string
         description:
           type: string

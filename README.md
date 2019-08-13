@@ -14,4 +14,4 @@ Make sure the server where the tool is installed has ssh access to the environme
 
 ## Developer tools
 
-- for development, install `symfony-cli` and `vue-cli` (both in arch AUR)
+- for development, install `symfony-cli`, `vue-cli` and `openapi-generator-cli` (both in arch AUR)
