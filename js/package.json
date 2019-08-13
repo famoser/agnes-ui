@@ -54,7 +54,9 @@
       "@vue/prettier",
       "@vue/typescript"
     ],
-    "rules": {},
+    "rules": {
+      "vueIndentScriptAndStyle": true
+    },
     "parserOptions": {
       "parser": "@typescript-eslint/parser"
     }

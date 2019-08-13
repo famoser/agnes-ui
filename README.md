@@ -14,4 +14,7 @@ Make sure the server where the tool is installed has ssh access to the environme
 
 ## Developer tools
 
-- for development, install `symfony-cli`, `vue-cli` and `openapi-generator-cli` (both in arch AUR)
+install `symfony-cli`, `vue-cli` and `openapi-generator-cli`
+
+start the server with `symfony serve` & the frontend with `cd js && yarn serve`.
+for the API requests to work, ensure CORS is enabled for localhost (https://addons.mozilla.org/de/firefox/addon/cors-everywhere/)
