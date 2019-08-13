@@ -60,7 +60,7 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "generate:api": "openapi-generator-cli generate -i agnesui.openapi.yml -g php-symfony -o openapi -c openapi/openapi.php-symfony.config.yml"
+        "generate:openapi": "openapi-generator-cli generate -i agnesui.openapi.yml -g php-symfony -o src -c src/.openapi-generator/openapi.php-symfony.config.yml"
     },
     "conflict": {
         "symfony/symfony": "*"
