@@ -48,43 +48,58 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-        <v-btn color="blue darken-1" text @click="createRelease()">Save</v-btn>
+        <v-btn color="blue darken-1" text @click="dialog = false" :disabled="disabled">Close</v-btn>
+        <v-btn color="blue darken-1" text @click="createRelease()" :disabled="disabled">Save</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
-import {ReleaseApi} from "@/api/api";
+    import {Component, Prop, Vue} from "vue-property-decorator";
+    import {ReleaseApi} from "@/api/api";
 
-@Component
-export default class CreateReleaseDialog extends Vue {
-  public dialog = false;
+    @Component
+    export default class CreateReleaseDialog extends Vue {
+        public dialog = false;
+        public disabled = false;
 
-  public branch: String = "";
-  public commit: String = "";
-  public releaseNotes = "";
-  public name = "";
+        private readonly latestCommit = "latest";
 
-  mounted() {
-    this.branch = this.branches[0];
-    this.commit = this.commits[0];
-  }
+        public branch: string = "";
+        public commit: string = "";
+        public releaseNotes = "";
+        public name = "";
 
-  createRelease() {
-    this.dialog = false;
+        mounted() {
+            this.branch = this.branches[0];
+            this.commit = this.commits[0];
+        }
 
-    let release = new ReleaseApi(undefined, )
-  }
+        createRelease() {
+            this.disabled = true;
 
-  get branches() {
-    return ["master"];
-  }
+            const commitish = this.commit === this.latestCommit ? this.branch : this.commit;
 
-  get commits() {
-    return ["latest"];
-  }
-}
+            let release = new ReleaseApi(undefined, process.env.VUE_APP_API_BASE_URL);
+            const response = release.add({
+                name: this.name,
+                commitish: commitish,
+                description: this.releaseNotes
+            });
+
+            response.finally(() => {
+                this.dialog = false;
+                this.disabled = false;
+            })
+        }
+
+        get branches() {
+            return ["master"];
+        }
+
+        get commits() {
+            return [this.latestCommit];
+        }
+    }
 </script>
