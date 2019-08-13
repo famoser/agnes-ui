@@ -4,7 +4,6 @@
 namespace App\Service;
 
 
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -70,6 +69,11 @@ class ConfigService
      */
     private function getConfigRepositoryConfigs()
     {
+        // empty result if no config repo specified
+        if (strlen($this->configRepository) === 0) {
+            return [];
+        }
+
         $repoFolder = $this->repositoryPath . DIRECTORY_SEPARATOR . "config";
         $this->ensureRepositoryExists($repoFolder, $this->configRepository);
 
@@ -83,10 +87,14 @@ class ConfigService
     private function ensureRepositoryExists(string $repoFolder, string $repository)
     {
         if (!is_dir($repoFolder)) {
-            mkdir($repoFolder);
-            exec("cd $repoFolder && git clone $repository .");
-        } else {
-            exec("cd $repoFolder && git pull");
+            mkdir($repoFolder, 0777, true);
         }
+
+        // if dir empty, possibly clone failed before. hence we repeat
+        if (!(new \FilesystemIterator($repoFolder))->valid()) {
+            exec("cd $repoFolder && git clone $repository .");
+        }
+
+        exec("cd $repoFolder && git pull");
     }
 }

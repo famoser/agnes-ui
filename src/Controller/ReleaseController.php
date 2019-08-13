@@ -29,13 +29,13 @@
 
 namespace App\Controller;
 
-use \Exception;
+use App\Api\ReleaseApiInterface;
+use Exception;
+use JMS\Serializer\Exception\RuntimeException as SerializerRuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Api\ReleaseApiInterface;
-use App\Model\Release;
 
 /**
  * ReleaseController Class Doc Comment
@@ -76,7 +76,7 @@ class ReleaseController extends Controller
         // Deserialize the input values that needs it
         try {
             $release = $this->deserialize($release, 'App\Model\Release', $inputFormat);
-        } catch (Exception $exception) {
+        } catch (SerializerRuntimeException $exception) {
             return $this->createBadRequestResponse($exception->getMessage());
         }
 

@@ -34,6 +34,7 @@ use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -62,16 +63,23 @@ class Controller extends AbstractController
     protected $apiServer;
 
     /**
+     * @var KernelInterface
+     */
+    private $kernel;
+
+    /**
      * Controller constructor.
      * @param ValidatorInterface $validator
      * @param SerializerInterface $serializer
      * @param ApiServer $apiServer
+     * @param KernelInterface $kernel
      */
-    public function __construct(ValidatorInterface $validator, SerializerInterface $serializer, ApiServer $apiServer)
+    public function __construct(ValidatorInterface $validator, SerializerInterface $serializer, ApiServer $apiServer, KernelInterface $kernel)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;
         $this->apiServer = $apiServer;
+        $this->kernel = $kernel;
     }
 
     /**
@@ -131,7 +139,8 @@ class Controller extends AbstractController
      */
     protected function deserialize($data, $class, $format)
     {
-        return $this->serializer->deserialize($data, $class, $format);
+        $formatWithoutApplicationPrefix = substr($format, 12);
+        return $this->serializer->deserialize($data, $class, $formatWithoutApplicationPrefix);
     }
 
     protected function validate($data, $asserts = null)
@@ -159,7 +168,7 @@ class Controller extends AbstractController
             return null;
         }
 
-        if (!$this->container->get('kernel')->isDebug()) {
+        if (!$this->kernel->isDebug()) {
             return [
                 'message' => $exception->getMessage(),
             ];

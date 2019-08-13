@@ -28,7 +28,6 @@
 
 namespace App\Api;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Model\Release;
 
 /**

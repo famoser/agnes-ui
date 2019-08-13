@@ -6,7 +6,6 @@ namespace App\Entity;
 
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TargetTrait;
-
 use Doctrine\ORM\Mapping as ORM;
 
 /**

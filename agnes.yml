@@ -18,8 +18,8 @@ application:
   scripts:
     release:
       - composer install --verbose --prefer-dist --no-interaction --no-dev --optimize-autoloader --no-scripts
-      - cd assets && yarn install && yarn build
-      - rm -rf assets
+      - cd js && yarn install && yarn build
+      - rm -rf js
 
     deploy:
       - php bin/console cache:clear -n
