@@ -8,7 +8,7 @@
 Api/ApiServer.php
 autoload.php
 composer.json
-# Controller/Controller.php
+Controller/Controller.php
 git_push.sh
 OpenAPIServerBundle.php
 phpunit.xml.dist

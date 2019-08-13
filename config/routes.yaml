@@ -3,4 +3,5 @@
 #    controller: App\Controller\DefaultController::index
 
 open_api_server:
-  resource: "@AppBundle/Resources/config/routing.yml"
+  prefix: /api
+  resource: "Resources/config/routing.yml"

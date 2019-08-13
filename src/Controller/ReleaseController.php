@@ -30,7 +30,6 @@
 namespace App\Controller;
 
 use \Exception;
-use JMS\Serializer\Exception\RuntimeException as SerializerRuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -77,7 +76,7 @@ class ReleaseController extends Controller
         // Deserialize the input values that needs it
         try {
             $release = $this->deserialize($release, 'App\Model\Release', $inputFormat);
-        } catch (SerializerRuntimeException $exception) {
+        } catch (Exception $exception) {
             return $this->createBadRequestResponse($exception->getMessage());
         }
 
