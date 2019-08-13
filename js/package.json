@@ -11,6 +11,7 @@
     "generate:openapi": "openapi-generator-cli generate -i ../agnesui.openapi.yml -g typescript-axios -o src/api"
   },
   "dependencies": {
+    "axios": "^0.19.0",
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",

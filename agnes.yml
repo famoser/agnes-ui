@@ -35,16 +35,6 @@ application:
       - composer install --no-interaction --optimize-autoloader --no-scripts
       - php bin/console doctrine:fixtures:load -n
 
-servers:
-  hostpoint:
-    connection:
-      type: ssh
-      destination: '%env(SERVER_DESTINATION)%'
-    path: '%env(SERVER_PATH)%'
-    keep_releases: 2
-    environments:
-      agnes.famoser.ch: [production, dev]
-
 policies:
   strategy: unanimous # all matching policies must be valid
   allow_if_all_abstain: true # if no matching policy is found, the execution is allowed

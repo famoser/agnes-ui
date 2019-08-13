@@ -4,14 +4,12 @@
 namespace App\Api\Implementation;
 
 
-use Agnes\AgnesFactory;
 use App\Api\ReleaseApiInterface;
 use App\Model\Release;
 use Http\Client\Exception;
 
-class ReleaseApi implements ReleaseApiInterface
+class ReleaseApi extends AgnesBase implements ReleaseApiInterface
 {
-
     /**
      * Operation add
      *
@@ -23,10 +21,11 @@ class ReleaseApi implements ReleaseApiInterface
      *
      * @return void
      * @throws Exception
+     * @throws \Exception
      */
     public function add(Release $release, &$responseCode, array &$responseHeaders)
     {
-        $agnesFactory = new AgnesFactory();
+        $agnesFactory = $this->getConfiguredAgnesFactory();
         $releaseService = $agnesFactory->createReleaseAction();
 
         $responseCode = 201;

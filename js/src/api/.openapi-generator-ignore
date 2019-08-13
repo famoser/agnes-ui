@@ -5,6 +5,5 @@
 # The patterns follow closely to .gitignore or .dockerignore.
 
 .gitignore
-custom.d.ts
 git_push.sh
 index.ts

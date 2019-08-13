@@ -57,6 +57,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import {ReleaseApi} from "@/api/api";
 
 @Component
 export default class CreateReleaseDialog extends Vue {
@@ -74,6 +75,8 @@ export default class CreateReleaseDialog extends Vue {
 
   createRelease() {
     this.dialog = false;
+
+    let release = new ReleaseApi(undefined, )
   }
 
   get branches() {
