@@ -7,7 +7,8 @@
     "build": "vue-cli-service build --no-clean",
     "lint": "vue-cli-service lint",
     "test:e2e": "vue-cli-service test:e2e",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "generate:openapi": "openapi-generator-cli generate -i ../agnesui.openapi.yml -g typescript-axios -o src/api"
   },
   "dependencies": {
     "core-js": "^2.6.5",
