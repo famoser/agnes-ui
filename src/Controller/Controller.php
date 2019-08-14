@@ -125,7 +125,8 @@ class Controller extends AbstractController
      */
     protected function serialize($data, $format)
     {
-        return $this->serializer->serialize($data, $format);
+        $formatWithoutApplicationPrefix = substr($format, 12);
+        return $this->serializer->serialize($data, $formatWithoutApplicationPrefix);
     }
 
     /**

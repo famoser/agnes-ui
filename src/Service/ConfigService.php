@@ -77,7 +77,7 @@ class ConfigService
         $repoFolder = $this->repositoryPath . DIRECTORY_SEPARATOR . "config";
         $this->ensureRepositoryExists($repoFolder, $this->configRepository);
 
-        return glob("*.yml");
+        return glob($repoFolder . DIRECTORY_SEPARATOR . "*.yml");
     }
 
     /**

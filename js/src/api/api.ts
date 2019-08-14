@@ -21,6 +21,88 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 /**
  * 
  * @export
+ * @interface Deployment
+ */
+export interface Deployment {
+    /**
+     * 
+     * @type {string}
+     * @memberof Deployment
+     */
+    target: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Deployment
+     */
+    release: string;
+}
+/**
+ * 
+ * @export
+ * @interface Installation
+ */
+export interface Installation {
+    /**
+     * 
+     * @type {Release}
+     * @memberof Installation
+     */
+    release?: Release;
+}
+/**
+ * 
+ * @export
+ * @interface Instance
+ */
+export interface Instance {
+    /**
+     * 
+     * @type {string}
+     * @memberof Instance
+     */
+    server: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Instance
+     */
+    environment: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Instance
+     */
+    stage: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Instance
+     */
+    currentReleaseName?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ModelFile
+ */
+export interface ModelFile {
+    /**
+     * 
+     * @type {string}
+     * @memberof ModelFile
+     */
+    path: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ModelFile
+     */
+    content: string;
+}
+/**
+ * 
+ * @export
  * @interface Release
  */
 export interface Release {
@@ -29,20 +111,304 @@ export interface Release {
      * @type {string}
      * @memberof Release
      */
-    commitish?: string;
+    commitish: string;
     /**
      * 
      * @type {string}
      * @memberof Release
      */
-    description?: string;
+    description: string;
     /**
      * 
      * @type {string}
      * @memberof Release
      */
-    name?: string;
+    name: string;
 }
+
+/**
+ * DeployApi - axios parameter creator
+ * @export
+ */
+export const DeployApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Deploy to environments
+         * @param {Deployment} deployment The deployment to start
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deploy(deployment: Deployment, options: any = {}): RequestArgs {
+            // verify required parameter 'deployment' is not null or undefined
+            if (deployment === null || deployment === undefined) {
+                throw new RequiredError('deployment','Required parameter deployment was null or undefined when calling deploy.');
+            }
+            const localVarPath = `/deloy`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...options.headers};
+            const needsSerialization = (<any>"Deployment" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(deployment !== undefined ? deployment : {}) : (deployment || "");
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Check which instances the deploy would affect
+         * @param {Deployment} deployment The deployment to dry run
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployDryRun(deployment: Deployment, options: any = {}): RequestArgs {
+            // verify required parameter 'deployment' is not null or undefined
+            if (deployment === null || deployment === undefined) {
+                throw new RequiredError('deployment','Required parameter deployment was null or undefined when calling deployDryRun.');
+            }
+            const localVarPath = `/deloy/dryrun`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...options.headers};
+            const needsSerialization = (<any>"Deployment" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(deployment !== undefined ? deployment : {}) : (deployment || "");
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * DeployApi - functional programming interface
+ * @export
+ */
+export const DeployApiFp = function(configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Deploy to environments
+         * @param {Deployment} deployment The deployment to start
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deploy(deployment: Deployment, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Response> {
+            const localVarAxiosArgs = DeployApiAxiosParamCreator(configuration).deploy(deployment, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @summary Check which instances the deploy would affect
+         * @param {Deployment} deployment The deployment to dry run
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployDryRun(deployment: Deployment, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Instance>> {
+            const localVarAxiosArgs = DeployApiAxiosParamCreator(configuration).deployDryRun(deployment, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+    }
+};
+
+/**
+ * DeployApi - factory interface
+ * @export
+ */
+export const DeployApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    return {
+        /**
+         * 
+         * @summary Deploy to environments
+         * @param {Deployment} deployment The deployment to start
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deploy(deployment: Deployment, options?: any) {
+            return DeployApiFp(configuration).deploy(deployment, options)(axios, basePath);
+        },
+        /**
+         * 
+         * @summary Check which instances the deploy would affect
+         * @param {Deployment} deployment The deployment to dry run
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deployDryRun(deployment: Deployment, options?: any) {
+            return DeployApiFp(configuration).deployDryRun(deployment, options)(axios, basePath);
+        },
+    };
+};
+
+/**
+ * DeployApi - object-oriented interface
+ * @export
+ * @class DeployApi
+ * @extends {BaseAPI}
+ */
+export class DeployApi extends BaseAPI {
+    /**
+     * 
+     * @summary Deploy to environments
+     * @param {Deployment} deployment The deployment to start
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deploy(deployment: Deployment, options?: any) {
+        return DeployApiFp(this.configuration).deploy(deployment, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @summary Check which instances the deploy would affect
+     * @param {Deployment} deployment The deployment to dry run
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DeployApi
+     */
+    public deployDryRun(deployment: Deployment, options?: any) {
+        return DeployApiFp(this.configuration).deployDryRun(deployment, options)(this.axios, this.basePath);
+    }
+
+}
+
+
+/**
+ * InstanceApi - axios parameter creator
+ * @export
+ */
+export const InstanceApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary gets all instances
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll(options: any = {}): RequestArgs {
+            const localVarPath = `/instance/all`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...options.headers};
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * InstanceApi - functional programming interface
+ * @export
+ */
+export const InstanceApiFp = function(configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary gets all instances
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll(options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Instance>> {
+            const localVarAxiosArgs = InstanceApiAxiosParamCreator(configuration).getAll(options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+    }
+};
+
+/**
+ * InstanceApi - factory interface
+ * @export
+ */
+export const InstanceApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    return {
+        /**
+         * 
+         * @summary gets all instances
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll(options?: any) {
+            return InstanceApiFp(configuration).getAll(options)(axios, basePath);
+        },
+    };
+};
+
+/**
+ * InstanceApi - object-oriented interface
+ * @export
+ * @class InstanceApi
+ * @extends {BaseAPI}
+ */
+export class InstanceApi extends BaseAPI {
+    /**
+     * 
+     * @summary gets all instances
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof InstanceApi
+     */
+    public getAll(options?: any) {
+        return InstanceApiFp(this.configuration).getAll(options)(this.axios, this.basePath);
+    }
+
+}
+
 
 /**
  * ReleaseApi - axios parameter creator
@@ -88,6 +454,35 @@ export const ReleaseApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Gets all releases
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll(options: any = {}): RequestArgs {
+            const localVarPath = `/release/all`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...options.headers};
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -106,6 +501,19 @@ export const ReleaseApiFp = function(configuration?: Configuration) {
          */
         add(release: Release, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Response> {
             const localVarAxiosArgs = ReleaseApiAxiosParamCreator(configuration).add(release, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @summary Gets all releases
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll(options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Release>> {
+            const localVarAxiosArgs = ReleaseApiAxiosParamCreator(configuration).getAll(options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -130,6 +538,15 @@ export const ReleaseApiFactory = function (configuration?: Configuration, basePa
         add(release: Release, options?: any) {
             return ReleaseApiFp(configuration).add(release, options)(axios, basePath);
         },
+        /**
+         * 
+         * @summary Gets all releases
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAll(options?: any) {
+            return ReleaseApiFp(configuration).getAll(options)(axios, basePath);
+        },
     };
 };
 
@@ -150,6 +567,17 @@ export class ReleaseApi extends BaseAPI {
      */
     public add(release: Release, options?: any) {
         return ReleaseApiFp(this.configuration).add(release, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @summary Gets all releases
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ReleaseApi
+     */
+    public getAll(options?: any) {
+        return ReleaseApiFp(this.configuration).getAll(options)(this.axios, this.basePath);
     }
 
 }
