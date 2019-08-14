@@ -1,17 +1,26 @@
 <template>
-  <v-container>
-    <v-layout text-center wrap>
-      <v-flex mb-4>
-        <v-data-table
-          :headers="headers"
-          :items="items"
-          :loading="instances === null"
-          hide-default-footer
-          class="elevation-1"
-        />
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <v-layout wrap>
+    <v-flex mb-4>
+      <v-simple-table
+        class="elevation-1"
+      >
+        <thead>
+        <tr>
+          <th></th>
+          <th v-for="stage in stages" :key="stage">{{stage}}</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="environment in environments" :key="environment.name">
+          <td>{{environment.name}}</td>
+          <td v-for="stage in stages" :key="environment.name + '_' + stage">
+            {{environment.getReleaseByStage(stage)}}
+          </td>
+        </tr>
+        </tbody>
+      </v-simple-table>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script lang="ts">
@@ -38,36 +47,30 @@
   @Component
   export default class InstanceOverview extends Vue {
 
-    private instanceApi: InstanceApi | null = null;
+    private _instanceApi: InstanceApi | null = null;
     public instances: Array<Instance> | null = null;
 
     mounted() {
-      this.instanceApi = new InstanceApi(undefined, process.env.VUE_APP_API_BASE_URL);
-      this.instanceApi.getAll().then((instances) => {
+      this._instanceApi = new InstanceApi(undefined, process.env.VUE_APP_API_BASE_URL);
+      this._instanceApi.getAll().then((instances) => {
         this.instances = instances.data;
       })
     }
 
-    get headers() {
-      let environmentHeader = {
-        text: "environment",
-        value: "environment"
-      };
-      return [environmentHeader]
-        .concat(this.stages.map(entry => {
-          return {
-            text: entry,
-            value: entry
-          }
-        }));
-    }
-
-    get items() {
+    get stages() {
       if (this.instances == null) {
         return [];
       }
 
-      let rows = [];
+      let stages = this.instances.map(i => i.stage);
+      return [...new Set(stages)];
+    }
+
+    get environments() {
+      if (this.instances == null) {
+        return [];
+      }
+
       let environments = new Map<String, Environment>();
       for (const instance of this.instances) {
         if (!environments.has(instance.environment)) {
@@ -79,26 +82,13 @@
         environment.setRelease(instance.stage, instance.currentReleaseName);
       }
 
-      for (const environment of environments.values()) {
-        let row = new Map<String, String>();
-        row.set("environment", environment.name);
-        for (const stage of this.stages) {
-          row.set(stage, environment.getReleaseByStage(stage))
-        }
+      return Array.from(environments.values());
 
-        rows.push(Object.fromEntries(row))
-      }
-
-      return rows;
-    }
-
-    get stages() {
-      if (this.instances == null) {
-        return [];
-      }
-
-      let stages = this.instances.map(i => i.stage);
-      return [...new Set(stages)];
     }
   }
 </script>
+
+<style lang="sass" scoped>
+  .clickable
+    cursor: pointer
+</style>

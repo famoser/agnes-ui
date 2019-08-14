@@ -14,6 +14,7 @@
                justify="center">
           <v-col lg="8">
             <InstanceOverview/>
+            <DeployDialog>Deploy</DeployDialog>
           </v-col>
         </v-row>
       </v-container>
@@ -23,16 +24,16 @@
 
 <script lang="ts">
   import Vue from "vue";
-  import HelloWorld from "./components/HelloWorld.vue";
   import CreateReleaseDialog from "@/components/CreateReleaseDialog.vue";
   import InstanceOverview from "@/components/InstanceOverview.vue";
+  import DeployDialog from "@/components/DeployDialog.vue";
 
   export default Vue.extend({
     name: "App",
     components: {
+      DeployDialog,
       InstanceOverview,
-      CreateReleaseDialog,
-      HelloWorld
+      CreateReleaseDialog
     },
     data: () => ({
       dialog: false,
