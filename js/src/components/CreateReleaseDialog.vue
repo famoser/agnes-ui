@@ -46,9 +46,6 @@
         </v-container>
         <small class="mb-6">*indicates required field</small>
 
-        <v-alert v-if="state === 'initial'" type="info">
-          Choose a release name according to semantic versioning.
-        </v-alert>
         <v-alert v-if="state === 'failed'" type="error">
           The release failed to publish! Look in the console for the error.
         </v-alert>
