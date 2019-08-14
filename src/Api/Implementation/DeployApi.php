@@ -85,6 +85,10 @@ class DeployApi extends AgnesBase implements DeployApiInterface
     private function createDeploys(Deployment $deployment, InstanceService $instanceService, GithubService $githubService)
     {
         $releaseWithAsset = $this->getRelease($deployment->getRelease(), $githubService);
+        if ($releaseWithAsset == null) {
+            return null;
+        }
+
         $instances = $instanceService->getInstancesFromInstanceSpecification($deployment->getTarget());
 
         $deploys = [];
@@ -125,6 +129,7 @@ class DeployApi extends AgnesBase implements DeployApiInterface
         $instance->setServer($deployTarget->getServerName());
         $instance->setEnvironment($deployTarget->getEnvironmentName());
         $instance->setStage($deployTarget->getStage());
+        $instance->setCurrentReleaseName($deployTarget->getCurrentReleaseName());
 
         return $instance;
     }

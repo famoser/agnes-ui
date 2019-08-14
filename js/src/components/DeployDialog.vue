@@ -14,30 +14,71 @@
           <v-layout wrap>
             <v-flex xs12 md6>
               <v-text-field
-                v-model="target"
-                @change=""
-                label="target*"
-                hint="in the form server:environment:stage, for example *:*:dev"
-                persistent-hint
+                v-model="release"
+                :disabled="state === 'deploying'"
+                label="release*"
                 required
               ></v-text-field>
             </v-flex>
             <v-flex xs12 md6>
               <v-text-field
-                v-model="release"
-                label="release*"
+                v-model="target"
+                :disabled="state === 'deploying'"
+                @change=""
+                label="target*"
+                hint="in the form server:environment:stage"
+                persistent-hint
                 required
               ></v-text-field>
             </v-flex>
+            <v-flex md12 class="mt-6">
+              <v-alert v-if="!anyAffectedInstances && state === 'initial'" type="info">
+                Select release and targets and we will show you a preview which instances are affected.
+              </v-alert>
+              <v-progress-circular v-if="state === 'loading-dry-run'" class="justify-center" indeterminate/>
+
+              <v-alert v-if="!anyAffectedInstances && state === 'idle'" type="info">
+                The release was not found or you are not allowed to deploy the release on any specified targets.
+              </v-alert>
+
+              <v-alert v-if="state === 'errored'" type="error">
+                The deployment failed! Look in the console for the error.
+              </v-alert>
+              <v-alert
+                v-if="anyAffectedInstances"
+                border="top"
+                colored-border
+                color="primary"
+                elevation="2"
+              >
+                <p>your deployment will be executed on the following instances</p>
+                <v-simple-table class="elevation-1">
+                  <thead>
+                  <tr>
+                    <th>server</th>
+                    <th>environment</th>
+                    <th>stage</th>
+                    <th>aktueller release</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="instance in affectedInstances" :key="instance.name">
+                    <td>{{instance.server}}</td>
+                    <td>{{instance.environment}}</td>
+                    <td>{{instance.stage}}</td>
+                    <td>{{instance.currentReleaseName}}</td>
+                  </tr>
+                  </tbody>
+                </v-simple-table>
+              </v-alert>
+            </v-flex>
           </v-layout>
         </v-container>
-        <small>*indicates required field</small>
-        <small>deploy {{canDeploy ? "yes" : "no"}}</small>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="dialog = false" :disabled="disabled">Close</v-btn>
-        <v-btn color="blue darken-1" text @click="deploy()" :disabled="canDeploy" :loading="disabled">Release</v-btn>
+        <v-btn @click="dialog = false" :disabled="state === 'deploying'">Close</v-btn>
+        <v-btn color="primary" @click="deploy()" :disabled="!anyAffectedInstances" :loading="state === 'deploying'">Deploy</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -50,22 +91,18 @@
   @Component
   export default class CreateReleaseDialog extends Vue {
     public dialog = false;
-    public disabled = false;
 
-    private _deployApi: DeployApi | null = null;
-    private _apiError: String | null = null;
+    public state = "initial";
+
+    private deployApi: DeployApi = new DeployApi(undefined, process.env.VUE_APP_API_BASE_URL);
+    private apiError: String | null = null;
 
     public target: string = "*:*:dev";
     public release: string = "";
 
     private reloadAffectedInstancesTask: any;
 
-    private _affectedInstances: Instance[] | null = null;
-
-    mounted() {
-      this._deployApi = new DeployApi(undefined, process.env.VUE_APP_API_BASE_URL);
-      this._affectedInstances = []
-    }
+    private affectedInstances: Instance[] = [];
 
     @Watch('target')
     onTargetChanged() {
@@ -74,7 +111,7 @@
 
     @Watch('release')
     onReleaseChanged() {
-      this._affectedInstances = [];
+      this.affectedInstances = [];
 
       // debounce reload
       if (this.reloadAffectedInstancesTask) {
@@ -82,15 +119,35 @@
       }
       this.reloadAffectedInstancesTask = setTimeout(() => {
         this.dryRun()
-      }, 200);
+      }, 1000);
     }
 
     dryRun() {
       const deployment = this.createDeployment();
+      this.state = "loading-dry-run";
 
-      this._deployApi!!.deployDryRun(deployment).then((instances) => {
-        this._affectedInstances = instances.data
+      this.deployApi!.deployDryRun(deployment).then((instances) => {
+        this.affectedInstances = instances.data;
+        this.state = "idle";
       });
+    }
+
+    get anyAffectedInstances() {
+      return this.affectedInstances.length > 0;
+    }
+
+    deploy() {
+      const deployment = this.createDeployment();
+      this.state = "deploying";
+
+      this.deployApi!.deploy(deployment)
+        .then(() => {
+          this.dialog = false
+        })
+        .catch((reason) => {
+          this.state = "errored";
+          console.log(reason);
+        });
     }
 
     private createDeployment(): Deployment {
@@ -98,22 +155,6 @@
         release: this.release,
         target: this.target
       }
-    }
-
-    get canDeploy() {
-      return this._affectedInstances != null && this._affectedInstances.length > 0;
-    }
-
-    deploy() {
-      const deployment = this.createDeployment();
-
-      this._deployApi!!.deploy(deployment)
-        .then(() => {
-          this.dialog = false
-        })
-        .catch((reason) => {
-          this._apiError = reason;
-        });
     }
   }
 </script>

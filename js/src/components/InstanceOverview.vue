@@ -1,9 +1,7 @@
 <template>
   <v-layout wrap>
     <v-flex mb-4>
-      <v-simple-table
-        class="elevation-1"
-      >
+      <v-simple-table class="elevation-1">
         <thead>
         <tr>
           <th></th>

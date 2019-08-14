@@ -9,7 +9,7 @@
         "ext-json": "*",
         "ext-mbstring": "*",
         "doctrine/doctrine-fixtures-bundle": "^3.2",
-        "famoser/agnes": "^0.9",
+        "famoser/agnes": "^0.10",
         "jms/serializer-bundle": "^3.4",
         "sensio/framework-extra-bundle": "^5.4",
         "sensiolabs/security-checker": "^6.0",
@@ -20,6 +20,7 @@
         "symfony/monolog-bundle": "^3.4",
         "symfony/orm-pack": "^1.0",
         "symfony/test-pack": "^1.0",
+        "symfony/twig-bundle": "4.3.*",
         "symfony/validator": "4.3.*",
         "symfony/yaml": "4.3.*"
     },

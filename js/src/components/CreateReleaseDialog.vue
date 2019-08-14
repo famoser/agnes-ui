@@ -44,12 +44,19 @@
             </v-flex>
           </v-layout>
         </v-container>
-        <small>*indicates required field</small>
+        <small class="mb-6">*indicates required field</small>
+
+        <v-alert v-if="state === 'initial'" type="info">
+          Choose a release name according to semantic versioning.
+        </v-alert>
+        <v-alert v-if="state === 'failed'" type="error">
+          The release failed to publish! Look in the console for the error.
+        </v-alert>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="blue darken-1" text @click="dialog = false" :disabled="disabled">Close</v-btn>
-        <v-btn color="blue darken-1" text @click="createRelease()" :disabled="disabled" :loading="disabled">Release</v-btn>
+        <v-btn @click="dialog = false" :disabled="state === 'releasing'">Close</v-btn>
+        <v-btn color="blue" @click="createRelease()" :loading="state === 'releasing'">Release</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -62,7 +69,7 @@
     @Component
     export default class CreateReleaseDialog extends Vue {
         public dialog = false;
-        public disabled = false;
+        public state = "initial";
 
         private readonly latestCommit = "latest";
 
@@ -77,7 +84,7 @@
         }
 
         createRelease() {
-            this.disabled = true;
+            this.state = 'releasing';
 
             const commitish = this.commit === this.latestCommit ? this.branch : this.commit;
 
@@ -86,12 +93,12 @@
                 name: this.name,
                 commitish: commitish,
                 description: this.releaseNotes
+            }).then(() => {
+              this.dialog = false
+            }).catch((reason) => {
+              this.state = 'failed';
+              console.log(reason)
             });
-
-            response.finally(() => {
-                this.dialog = false;
-                this.disabled = false;
-            })
         }
 
         get branches() {
