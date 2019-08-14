@@ -86,7 +86,7 @@ class DeployApi extends AgnesBase implements DeployApiInterface
     {
         $releaseWithAsset = $this->getRelease($deployment->getRelease(), $githubService);
         if ($releaseWithAsset == null) {
-            return null;
+            return [];
         }
 
         $instances = $instanceService->getInstancesFromInstanceSpecification($deployment->getTarget());

@@ -1,7 +1,8 @@
 <template>
   <v-layout wrap>
     <v-flex mb-4>
-      <v-simple-table class="elevation-1">
+      <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
+      <v-simple-table class="elevation-1" v-else>
         <thead>
         <tr>
           <th></th>
@@ -44,6 +45,7 @@
 
   @Component
   export default class InstanceOverview extends Vue {
+    public loading = true;
 
     private _instanceApi: InstanceApi | null = null;
     public instances: Array<Instance> | null = null;
@@ -52,6 +54,7 @@
       this._instanceApi = new InstanceApi(undefined, process.env.VUE_APP_API_BASE_URL);
       this._instanceApi.getAll().then((instances) => {
         this.instances = instances.data;
+        this.loading = false;
       })
     }
 

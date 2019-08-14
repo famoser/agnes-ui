@@ -13,8 +13,8 @@
         <v-row class="mb-12"
                justify="center">
           <v-col lg="8">
-            <InstanceOverview/>
             <DeployDialog>Deploy</DeployDialog>
+            <InstanceOverview class="mt-6"/>
           </v-col>
         </v-row>
       </v-container>
