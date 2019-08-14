@@ -1,6 +1,6 @@
 <?php
 /**
- * ReleaseApiInterface
+ * DeployApiInterface
  * PHP version 5
  *
  * @category Class
@@ -29,43 +29,45 @@
 namespace App\Api;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use App\Model\Release;
+use App\Model\Deployment;
+use App\Model\Instance;
 
 /**
- * ReleaseApiInterface Interface Doc Comment
+ * DeployApiInterface Interface Doc Comment
  *
  * @category Interface
  * @package  App\Api
  * @author   OpenAPI Generator team
  * @link     https://github.com/openapitools/openapi-generator
  */
-interface ReleaseApiInterface
+interface DeployApiInterface
 {
 
     /**
-     * Operation add
+     * Operation deploy
      *
-     * Add a new release
+     * Deploy to environments
      *
-     * @param  App\Model\Release $release  The release to be created (required)
+     * @param  App\Model\Deployment $deployment  The deployment to start (required)
      * @param  integer $responseCode     The HTTP response code to return
      * @param  array   $responseHeaders  Additional HTTP headers to return with the response ()
      *
      * @return void
      *
      */
-    public function add(Release $release, &$responseCode, array &$responseHeaders);
+    public function deploy(Deployment $deployment, &$responseCode, array &$responseHeaders);
 
     /**
-     * Operation getAll
+     * Operation deployDryRun
      *
-     * Gets all releases
+     * Check which instances the deploy would affect
      *
+     * @param  App\Model\Deployment $deployment  The deployment to dry run (required)
      * @param  integer $responseCode     The HTTP response code to return
      * @param  array   $responseHeaders  Additional HTTP headers to return with the response ()
      *
-     * @return App\Model\Release[]
+     * @return App\Model\Instance[]
      *
      */
-    public function getAll(&$responseCode, array &$responseHeaders);
+    public function deployDryRun(Deployment $deployment, &$responseCode, array &$responseHeaders);
 }

@@ -5,12 +5,12 @@ info:
   title: Agnes UI
   version: 1.0.0
 servers:
-- url: /api
+  - url: /api
 paths:
   /release:
     post:
       tags:
-      - release
+        - release
       summary: Add a new release
       operationId: add
       requestBody:
@@ -21,13 +21,91 @@ paths:
               $ref: '#/components/schemas/Release'
         required: true
       responses:
-        405:
-          description: Invalid input
+        201:
+          description: Created
           content: {}
-          
+
+
+  /release/all:
+    get:
+      tags:
+        - release
+      summary: Gets all releases
+      operationId: getAll
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Release'
+
+  /instance/all:
+    get:
+      tags:
+        - instance
+      summary: gets all instances
+      operationId: getAll
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Instance'
+
+  /deloy:
+    post:
+      tags:
+        - deploy
+      summary: Deploy to environments
+      operationId: deploy
+      requestBody:
+        description: The deployment to start
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Deployment'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+
+  /deloy/dryrun:
+    post:
+      tags:
+        - deploy
+      summary: Check which instances the deploy would affect
+      operationId: deployDryRun
+      requestBody:
+        description: The deployment to dry run
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Deployment'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Instance'
+
 components:
   schemas:
     Release:
+      required:
+        - commitish
+        - description
+        - name
       type: object
       properties:
         commitish:
@@ -36,3 +114,43 @@ components:
           type: string
         name:
           type: string
+    Deployment:
+      required:
+        - target
+        - release
+      type: object
+      properties:
+        target:
+          type: string
+        release:
+          type: string
+    Instance:
+      required:
+        - server
+        - environment
+        - stage
+      type: object
+      properties:
+        server:
+          type: string
+        environment:
+          type: string
+        stage:
+          type: string
+        currentReleaseName:
+          type: string
+    File:
+      required:
+        - path
+        - content
+      type: object
+      properties:
+        path:
+          type: string
+        content:
+          type: string
+    Installation:
+      type: object
+      properties:
+        release:
+          $ref: '#/components/schemas/Release'

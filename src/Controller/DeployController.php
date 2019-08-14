@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ReleaseController
+ * DeployController
  * PHP version 5
  *
  * @category Class
@@ -35,29 +35,30 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Api\ReleaseApiInterface;
-use App\Model\Release;
+use App\Api\DeployApiInterface;
+use App\Model\Deployment;
+use App\Model\Instance;
 
 /**
- * ReleaseController Class Doc Comment
+ * DeployController Class Doc Comment
  *
  * @category Class
  * @package  App\Controller
  * @author   OpenAPI Generator team
  * @link     https://github.com/openapitools/openapi-generator
  */
-class ReleaseController extends Controller
+class DeployController extends Controller
 {
 
     /**
-     * Operation add
+     * Operation deploy
      *
-     * Add a new release
+     * Deploy to environments
      *
      * @param Request $request The Symfony request to handle.
      * @return Response The Symfony response.
      */
-    public function addAction(Request $request)
+    public function deployAction(Request $request)
     {
         // Make sure that the client is providing something that we can consume
         $consumes = ['application/json'];
@@ -70,13 +71,13 @@ class ReleaseController extends Controller
         // Handle authentication
 
         // Read out all input parameter values into variables
-        $release = $request->getContent();
+        $deployment = $request->getContent();
 
         // Use the default value if no value was provided
 
         // Deserialize the input values that needs it
         try {
-            $release = $this->deserialize($release, 'App\Model\Release', $inputFormat);
+            $deployment = $this->deserialize($deployment, 'App\Model\Deployment', $inputFormat);
         } catch (SerializerRuntimeException $exception) {
             return $this->createBadRequestResponse($exception->getMessage());
         }
@@ -84,9 +85,9 @@ class ReleaseController extends Controller
         // Validate the input values
         $asserts = [];
         $asserts[] = new Assert\NotNull();
-        $asserts[] = new Assert\Type("App\Model\Release");
+        $asserts[] = new Assert\Type("App\Model\Deployment");
         $asserts[] = new Assert\Valid();
-        $response = $this->validate($release, $asserts);
+        $response = $this->validate($deployment, $asserts);
         if ($response instanceof Response) {
             return $response;
         }
@@ -99,7 +100,7 @@ class ReleaseController extends Controller
             // Make the call to the business logic
             $responseCode = 204;
             $responseHeaders = [];
-            $result = $handler->add($release, $responseCode, $responseHeaders);
+            $result = $handler->deploy($deployment, $responseCode, $responseHeaders);
 
             // Find default response message
             $message = 'Created';
@@ -127,15 +128,23 @@ class ReleaseController extends Controller
     }
 
     /**
-     * Operation getAll
+     * Operation deployDryRun
      *
-     * Gets all releases
+     * Check which instances the deploy would affect
      *
      * @param Request $request The Symfony request to handle.
      * @return Response The Symfony response.
      */
-    public function getAllAction(Request $request)
+    public function deployDryRunAction(Request $request)
     {
+        // Make sure that the client is providing something that we can consume
+        $consumes = ['application/json'];
+        $inputFormat = $request->headers->has('Content-Type')?$request->headers->get('Content-Type'):$consumes[0];
+        if (!in_array($inputFormat, $consumes)) {
+            // We can't consume the content that the client is sending us
+            return new Response('', 415);
+        }
+
         // Figure out what data format to return to the client
         $produces = ['application/json'];
         // Figure out what the client accepts
@@ -148,10 +157,26 @@ class ReleaseController extends Controller
         // Handle authentication
 
         // Read out all input parameter values into variables
+        $deployment = $request->getContent();
 
         // Use the default value if no value was provided
 
+        // Deserialize the input values that needs it
+        try {
+            $deployment = $this->deserialize($deployment, 'App\Model\Deployment', $inputFormat);
+        } catch (SerializerRuntimeException $exception) {
+            return $this->createBadRequestResponse($exception->getMessage());
+        }
+
         // Validate the input values
+        $asserts = [];
+        $asserts[] = new Assert\NotNull();
+        $asserts[] = new Assert\Type("App\Model\Deployment");
+        $asserts[] = new Assert\Valid();
+        $response = $this->validate($deployment, $asserts);
+        if ($response instanceof Response) {
+            return $response;
+        }
 
 
         try {
@@ -161,7 +186,7 @@ class ReleaseController extends Controller
             // Make the call to the business logic
             $responseCode = 200;
             $responseHeaders = [];
-            $result = $handler->getAll($responseCode, $responseHeaders);
+            $result = $handler->deployDryRun($deployment, $responseCode, $responseHeaders);
 
             // Find default response message
             $message = 'OK';
@@ -191,10 +216,10 @@ class ReleaseController extends Controller
 
     /**
      * Returns the handler for this API controller.
-     * @return ReleaseApiInterface
+     * @return DeployApiInterface
      */
     public function getApiHandler()
     {
-        return $this->apiServer->getApiHandler('release');
+        return $this->apiServer->getApiHandler('deploy');
     }
 }

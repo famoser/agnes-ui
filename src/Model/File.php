@@ -1,6 +1,6 @@
 <?php
 /**
- * Release
+ * File
  *
  * PHP version 5
  *
@@ -34,39 +34,30 @@ use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\SerializedName;
 
 /**
- * Class representing the Release model.
+ * Class representing the File model.
  *
  * @package App\Model
  * @author  OpenAPI Generator team
  */
-class Release 
+class File 
 {
         /**
      * @var string
-     * @SerializedName("commitish")
+     * @SerializedName("path")
      * @Assert\NotNull()
      * @Assert\Type("string")
      * @Type("string")
      */
-    protected $commitish;
+    protected $path;
 
     /**
      * @var string
-     * @SerializedName("description")
+     * @SerializedName("content")
      * @Assert\NotNull()
      * @Assert\Type("string")
      * @Type("string")
      */
-    protected $description;
-
-    /**
-     * @var string
-     * @SerializedName("name")
-     * @Assert\NotNull()
-     * @Assert\Type("string")
-     * @Type("string")
-     */
-    protected $name;
+    protected $content;
 
     /**
      * Constructor
@@ -74,79 +65,54 @@ class Release
      */
     public function __construct(array $data = null)
     {
-        $this->commitish = isset($data['commitish']) ? $data['commitish'] : null;
-        $this->description = isset($data['description']) ? $data['description'] : null;
-        $this->name = isset($data['name']) ? $data['name'] : null;
+        $this->path = isset($data['path']) ? $data['path'] : null;
+        $this->content = isset($data['content']) ? $data['content'] : null;
     }
 
     /**
-     * Gets commitish.
+     * Gets path.
      *
      * @return string
      */
-    public function getCommitish()
+    public function getPath()
     {
-        return $this->commitish;
+        return $this->path;
     }
 
     /**
-     * Sets commitish.
+     * Sets path.
      *
-     * @param string $commitish
+     * @param string $path
      *
      * @return $this
      */
-    public function setCommitish($commitish)
+    public function setPath($path)
     {
-        $this->commitish = $commitish;
+        $this->path = $path;
 
         return $this;
     }
 
     /**
-     * Gets description.
+     * Gets content.
      *
      * @return string
      */
-    public function getDescription()
+    public function getContent()
     {
-        return $this->description;
+        return $this->content;
     }
 
     /**
-     * Sets description.
+     * Sets content.
      *
-     * @param string $description
+     * @param string $content
      *
      * @return $this
      */
-    public function setDescription($description)
+    public function setContent($content)
     {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Gets name.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Sets name.
-     *
-     * @param string $name
-     *
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
+        $this->content = $content;
 
         return $this;
     }

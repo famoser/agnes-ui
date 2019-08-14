@@ -1,6 +1,6 @@
 <?php
 /**
- * Release
+ * Deployment
  *
  * PHP version 5
  *
@@ -34,39 +34,30 @@ use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\SerializedName;
 
 /**
- * Class representing the Release model.
+ * Class representing the Deployment model.
  *
  * @package App\Model
  * @author  OpenAPI Generator team
  */
-class Release 
+class Deployment 
 {
         /**
      * @var string
-     * @SerializedName("commitish")
+     * @SerializedName("target")
      * @Assert\NotNull()
      * @Assert\Type("string")
      * @Type("string")
      */
-    protected $commitish;
+    protected $target;
 
     /**
      * @var string
-     * @SerializedName("description")
+     * @SerializedName("release")
      * @Assert\NotNull()
      * @Assert\Type("string")
      * @Type("string")
      */
-    protected $description;
-
-    /**
-     * @var string
-     * @SerializedName("name")
-     * @Assert\NotNull()
-     * @Assert\Type("string")
-     * @Type("string")
-     */
-    protected $name;
+    protected $release;
 
     /**
      * Constructor
@@ -74,79 +65,54 @@ class Release
      */
     public function __construct(array $data = null)
     {
-        $this->commitish = isset($data['commitish']) ? $data['commitish'] : null;
-        $this->description = isset($data['description']) ? $data['description'] : null;
-        $this->name = isset($data['name']) ? $data['name'] : null;
+        $this->target = isset($data['target']) ? $data['target'] : null;
+        $this->release = isset($data['release']) ? $data['release'] : null;
     }
 
     /**
-     * Gets commitish.
+     * Gets target.
      *
      * @return string
      */
-    public function getCommitish()
+    public function getTarget()
     {
-        return $this->commitish;
+        return $this->target;
     }
 
     /**
-     * Sets commitish.
+     * Sets target.
      *
-     * @param string $commitish
+     * @param string $target
      *
      * @return $this
      */
-    public function setCommitish($commitish)
+    public function setTarget($target)
     {
-        $this->commitish = $commitish;
+        $this->target = $target;
 
         return $this;
     }
 
     /**
-     * Gets description.
+     * Gets release.
      *
      * @return string
      */
-    public function getDescription()
+    public function getRelease()
     {
-        return $this->description;
+        return $this->release;
     }
 
     /**
-     * Sets description.
+     * Sets release.
      *
-     * @param string $description
+     * @param string $release
      *
      * @return $this
      */
-    public function setDescription($description)
+    public function setRelease($release)
     {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    /**
-     * Gets name.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Sets name.
-     *
-     * @param string $name
-     *
-     * @return $this
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
+        $this->release = $release;
 
         return $this;
     }

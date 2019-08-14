@@ -43,9 +43,9 @@ class ConfigService
     public function getConfigFilePaths()
     {
         $targetConfigs = $this->getTargetRepositoryConfigs();
-        $overrideConfigs = $this->getConfigRepositoryConfigs();
+        $configConfigs = $this->getConfigRepositoryConfigs();
 
-        return array_merge($targetConfigs, $overrideConfigs);
+        return array_merge($targetConfigs, $configConfigs);
     }
 
     /**

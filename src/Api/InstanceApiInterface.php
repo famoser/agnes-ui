@@ -1,6 +1,6 @@
 <?php
 /**
- * ReleaseApiInterface
+ * InstanceApiInterface
  * PHP version 5
  *
  * @category Class
@@ -29,42 +29,28 @@
 namespace App\Api;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use App\Model\Release;
+use App\Model\Instance;
 
 /**
- * ReleaseApiInterface Interface Doc Comment
+ * InstanceApiInterface Interface Doc Comment
  *
  * @category Interface
  * @package  App\Api
  * @author   OpenAPI Generator team
  * @link     https://github.com/openapitools/openapi-generator
  */
-interface ReleaseApiInterface
+interface InstanceApiInterface
 {
-
-    /**
-     * Operation add
-     *
-     * Add a new release
-     *
-     * @param  App\Model\Release $release  The release to be created (required)
-     * @param  integer $responseCode     The HTTP response code to return
-     * @param  array   $responseHeaders  Additional HTTP headers to return with the response ()
-     *
-     * @return void
-     *
-     */
-    public function add(Release $release, &$responseCode, array &$responseHeaders);
 
     /**
      * Operation getAll
      *
-     * Gets all releases
+     * gets all instances
      *
      * @param  integer $responseCode     The HTTP response code to return
      * @param  array   $responseHeaders  Additional HTTP headers to return with the response ()
      *
-     * @return App\Model\Release[]
+     * @return App\Model\Instance[]
      *
      */
     public function getAll(&$responseCode, array &$responseHeaders);
