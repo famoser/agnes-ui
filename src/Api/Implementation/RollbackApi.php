@@ -48,10 +48,24 @@ class RollbackApi extends AgnesBase implements RollbackApiInterface
     {
         $targets = $instanceService->getInstancesFromInstanceSpecification($rollback->getTarget());
 
+        /**
+         * @param $argument
+         * @return string|null
+         */
+        $nonEmptyStringOrNull = function ($argument) {
+            if ($argument === null || !is_string($argument) || strlen(trim($argument)) === 0) {
+                return null;
+            }
+
+            return $argument;
+        };
+
         /** @var Rollback[] $rollbacks */
         $rollbacks = [];
         foreach ($targets as $target) {
-            $rollbackInstallation = $target->getRollbackTarget($rollback->getRollbackTo(), $rollback->getRollbackFrom());
+            $rollbackTo = $nonEmptyStringOrNull($rollback->getRollbackTo());
+            $rollbackFrom = $nonEmptyStringOrNull($rollback->getRollbackFrom());
+            $rollbackInstallation = $target->getRollbackTarget($rollbackTo, $rollbackFrom);
             if ($rollbackInstallation !== null) {
                 $rollbacks[] = new \Agnes\Actions\Rollback($target, $rollbackInstallation);
             }
