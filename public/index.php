@@ -6,8 +6,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 require dirname(__DIR__).'/config/bootstrap.php';
 
+
 if ($_SERVER['APP_DEBUG']) {
     umask(0000);
+
+    // enable CSP
+    header("Content-Security-Policy: block-all-mixed-content; default-src 'none'; base-uri 'self'; object-src 'self'; connect-src 'self'; script-src 'self' 'nonce-dJw4w9QgXdQ' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; form-action 'self'");
 
     // enable cross origin requests
     if (isset($_SERVER['HTTP_ORIGIN'])) {
