@@ -1,50 +1,52 @@
 <template>
   <v-dialog v-model="dialog" max-width="600px" @keydown.esc="dialog = false">
     <template v-slot:activator="{ on }">
-      <v-btn color="primary" dark v-on="on">
+      <v-btn v-on="on">
         <slot></slot>
       </v-btn>
     </template>
     <v-card>
       <v-card-title>
-        <span class="headline">Deploy</span>
+        <span class="headline">Rollback</span>
       </v-card-title>
       <v-card-text>
         <v-container grid-list-md pa-0>
           <v-layout wrap>
             <v-flex xs12 md6>
               <v-text-field
-                v-model="release"
-                :disabled="state === 'deploying'"
-                label="release*"
-                required
-              ></v-text-field>
-            </v-flex>
-            <v-flex xs12 md6>
-              <v-text-field
                 v-model="target"
-                :disabled="state === 'deploying'"
+                :disabled="state === 'rollback_active'"
                 label="target*"
                 hint="in the form server:environment:stage"
                 persistent-hint
-                required
-              ></v-text-field>
+                required/>
+            </v-flex>
+            <v-flex xs6 md3>
+              <v-text-field
+                v-model="rollbackTo"
+                :disabled="state === 'rollback_active'"
+                label="only rollback to"
+                required/>
+            </v-flex>
+            <v-flex xs6 md3>
+              <v-text-field
+                v-model="rollbackFrom"
+                :disabled="state === 'rollback_active'"
+                label="only rollback from"
+                required/>
             </v-flex>
             <v-flex md12 class="mt-6">
-              <v-alert v-if="state === 'initial'" type="info">
-                Select release and targets and we will show you a preview which instances are affected.
-              </v-alert>
-              <v-progress-circular v-if="state === 'loading-dry-run'" class="justify-center" indeterminate/>
+              <v-progress-circular v-if="state === 'loading-dry-run'" indeterminate/>
 
               <v-alert v-if="!anyAffectedInstances && state === 'idle'" type="info">
-                The release was not found or you are not allowed to deploy the release on any specified targets.
+                No rollback with these constrains are possible.
               </v-alert>
 
               <v-alert v-if="state === 'errored'" type="error">
                 The request failed! Ensure your arguments make sense and look in the console for the error.
               </v-alert>
-              <v-alert v-if="state === 'deploy_errored'" type="error">
-                The deployment failed! Look in the console for the error.
+              <v-alert v-if="state === 'rollback_errored'" type="error">
+                The rollback failed! Look in the console for the error.
               </v-alert>
               <v-alert
                 v-if="anyAffectedInstances"
@@ -53,7 +55,7 @@
                 color="primary"
                 elevation="2"
               >
-                <p>your deployment will be executed on the following instances</p>
+                <p>the rollback will be executed on the following instances</p>
                 <v-simple-table class="elevation-1">
                   <thead>
                   <tr>
@@ -61,14 +63,16 @@
                     <th>environment</th>
                     <th>stage</th>
                     <th>current release</th>
+                    <th>release after rollback</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr v-for="instance in affectedInstances" :key="instance.name">
-                    <td>{{instance.server}}</td>
-                    <td>{{instance.environment}}</td>
-                    <td>{{instance.stage}}</td>
-                    <td>{{instance.currentReleaseName}}</td>
+                  <tr v-for="pendingReleaseInstance in affectedInstances" :key="pendingReleaseInstance.name">
+                    <td>{{pendingReleaseInstance.instance.server}}</td>
+                    <td>{{pendingReleaseInstance.instance.environment}}</td>
+                    <td>{{pendingReleaseInstance.instance.stage}}</td>
+                    <td>{{pendingReleaseInstance.instance.currentReleaseName}}</td>
+                    <td>{{pendingReleaseInstance.pendingReleaseName}}</td>
                   </tr>
                   </tbody>
                 </v-simple-table>
@@ -79,8 +83,9 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="dialog = false" :disabled="state === 'deploying'">Close</v-btn>
-        <v-btn color="primary" @click="deploy()" :disabled="!anyAffectedInstances" :loading="state === 'deploying'">
+        <v-btn @click="dialog = false" :disabled="state === 'rollback_active'">Close</v-btn>
+        <v-btn color="primary" @click="rollback()" :disabled="!anyAffectedInstances"
+               :loading="state === 'rollback_active'">
           Deploy
         </v-btn>
       </v-card-actions>
@@ -90,30 +95,26 @@
 
 <script lang="ts">
   import {Component, Vue, Watch} from "vue-property-decorator";
-  import {DeployApi, Deployment, Instance, ReleaseApi} from "@/api/api";
+  import {DeployApi, Deployment, Instance, PendingReleaseInstance, ReleaseApi, Rollback, RollbackApi} from "@/api/api";
 
   @Component
-  export default class CreateReleaseDialog extends Vue {
+  export default class RollbackDialog extends Vue {
     public dialog = false;
 
     public state = "initial";
 
-    private deployApi = new DeployApi(undefined, process.env.VUE_APP_API_BASE_URL);
+    private rollbackApi = new RollbackApi(undefined, process.env.VUE_APP_API_BASE_URL);
 
     public target: string = "*:*:dev";
-    public release: string = "";
+    public rollbackTo: string = "";
+    public rollbackFrom: string = "";
 
     private reloadAffectedInstancesTask: any;
 
-    private affectedInstances: Instance[] = [];
+    private affectedInstances: PendingReleaseInstance[] = [];
 
     @Watch('target')
     onTargetChanged() {
-      this.onReleaseChanged();
-    }
-
-    @Watch('release')
-    onReleaseChanged() {
       this.affectedInstances = [];
 
       // debounce reload
@@ -125,11 +126,25 @@
       }, 1000);
     }
 
+    @Watch('rollbackTo')
+    onRollbackToChanged() {
+      this.onTargetChanged();
+    }
+
+    @Watch('rollbackFrom')
+    onRollbackFromChanged() {
+      this.onTargetChanged();
+    }
+
+    mounted() {
+      this.dryRun();
+    }
+
     private dryRun() {
-      const deployment = this.createDeployment();
+      const rollback = this.createRollback();
       this.state = "loading-dry-run";
 
-      this.deployApi.deployDryRun(deployment)
+      this.rollbackApi.rollbackDryRun(rollback)
         .then((instances) => {
           this.affectedInstances = instances.data;
           this.state = "idle";
@@ -144,25 +159,26 @@
       return this.affectedInstances.length > 0;
     }
 
-    deploy() {
-      const deployment = this.createDeployment();
-      this.state = "deploying";
+    rollback() {
+      const rollback = this.createRollback();
+      this.state = "rollback_active";
 
-      this.deployApi.deploy(deployment)
+      this.rollbackApi.rollback(rollback)
         .then(() => {
-          this.dialog = false;
           this.state = "idle";
+          this.dialog = false;
         })
         .catch((reason) => {
-          this.state = "deploy_errored";
+          this.state = "rollback_errored";
           console.log(reason);
         });
     }
 
-    private createDeployment(): Deployment {
+    private createRollback(): Rollback {
       return {
-        release: this.release,
-        target: this.target
+        target: this.target,
+        rollbackFrom: this.rollbackFrom,
+        rollbackTo: this.rollbackTo
       }
     }
   }

@@ -21,6 +21,44 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 /**
  * 
  * @export
+ * @interface AcrossInstancesAction
+ */
+export interface AcrossInstancesAction {
+    /**
+     * 
+     * @type {Instance}
+     * @memberof AcrossInstancesAction
+     */
+    source: Instance;
+    /**
+     * 
+     * @type {Instance}
+     * @memberof AcrossInstancesAction
+     */
+    target: Instance;
+}
+/**
+ * 
+ * @export
+ * @interface CopyShared
+ */
+export interface CopyShared {
+    /**
+     * 
+     * @type {string}
+     * @memberof CopyShared
+     */
+    target: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CopyShared
+     */
+    source: string;
+}
+/**
+ * 
+ * @export
  * @interface Deployment
  */
 export interface Deployment {
@@ -103,6 +141,25 @@ export interface ModelFile {
 /**
  * 
  * @export
+ * @interface PendingReleaseInstance
+ */
+export interface PendingReleaseInstance {
+    /**
+     * 
+     * @type {string}
+     * @memberof PendingReleaseInstance
+     */
+    pendingReleaseName: string;
+    /**
+     * 
+     * @type {Instance}
+     * @memberof PendingReleaseInstance
+     */
+    instance: Instance;
+}
+/**
+ * 
+ * @export
  * @interface Release
  */
 export interface Release {
@@ -125,6 +182,216 @@ export interface Release {
      */
     name: string;
 }
+/**
+ * 
+ * @export
+ * @interface Rollback
+ */
+export interface Rollback {
+    /**
+     * 
+     * @type {string}
+     * @memberof Rollback
+     */
+    target: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Rollback
+     */
+    rollbackFrom?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Rollback
+     */
+    rollbackTo?: string;
+}
+
+/**
+ * CopySharedApi - axios parameter creator
+ * @export
+ */
+export const CopySharedApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Copy the shared data from source to target (replicate source on target).
+         * @param {CopyShared} copyShared The copy shared action
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        copyShared(copyShared: CopyShared, options: any = {}): RequestArgs {
+            // verify required parameter 'copyShared' is not null or undefined
+            if (copyShared === null || copyShared === undefined) {
+                throw new RequiredError('copyShared','Required parameter copyShared was null or undefined when calling copyShared.');
+            }
+            const localVarPath = `/copyShared`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...options.headers};
+            const needsSerialization = (<any>"CopyShared" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(copyShared !== undefined ? copyShared : {}) : (copyShared || "");
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Check which instances the copy shared action would affect
+         * @param {CopyShared} copyShared The copy shared action to dry run
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        copySharedDryRun(copyShared: CopyShared, options: any = {}): RequestArgs {
+            // verify required parameter 'copyShared' is not null or undefined
+            if (copyShared === null || copyShared === undefined) {
+                throw new RequiredError('copyShared','Required parameter copyShared was null or undefined when calling copySharedDryRun.');
+            }
+            const localVarPath = `/copyShared/dryrun`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...options.headers};
+            const needsSerialization = (<any>"CopyShared" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(copyShared !== undefined ? copyShared : {}) : (copyShared || "");
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * CopySharedApi - functional programming interface
+ * @export
+ */
+export const CopySharedApiFp = function(configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Copy the shared data from source to target (replicate source on target).
+         * @param {CopyShared} copyShared The copy shared action
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        copyShared(copyShared: CopyShared, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Response> {
+            const localVarAxiosArgs = CopySharedApiAxiosParamCreator(configuration).copyShared(copyShared, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @summary Check which instances the copy shared action would affect
+         * @param {CopyShared} copyShared The copy shared action to dry run
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        copySharedDryRun(copyShared: CopyShared, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<AcrossInstancesAction>> {
+            const localVarAxiosArgs = CopySharedApiAxiosParamCreator(configuration).copySharedDryRun(copyShared, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+    }
+};
+
+/**
+ * CopySharedApi - factory interface
+ * @export
+ */
+export const CopySharedApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    return {
+        /**
+         * 
+         * @summary Copy the shared data from source to target (replicate source on target).
+         * @param {CopyShared} copyShared The copy shared action
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        copyShared(copyShared: CopyShared, options?: any) {
+            return CopySharedApiFp(configuration).copyShared(copyShared, options)(axios, basePath);
+        },
+        /**
+         * 
+         * @summary Check which instances the copy shared action would affect
+         * @param {CopyShared} copyShared The copy shared action to dry run
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        copySharedDryRun(copyShared: CopyShared, options?: any) {
+            return CopySharedApiFp(configuration).copySharedDryRun(copyShared, options)(axios, basePath);
+        },
+    };
+};
+
+/**
+ * CopySharedApi - object-oriented interface
+ * @export
+ * @class CopySharedApi
+ * @extends {BaseAPI}
+ */
+export class CopySharedApi extends BaseAPI {
+    /**
+     * 
+     * @summary Copy the shared data from source to target (replicate source on target).
+     * @param {CopyShared} copyShared The copy shared action
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CopySharedApi
+     */
+    public copyShared(copyShared: CopyShared, options?: any) {
+        return CopySharedApiFp(this.configuration).copyShared(copyShared, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @summary Check which instances the copy shared action would affect
+     * @param {CopyShared} copyShared The copy shared action to dry run
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CopySharedApi
+     */
+    public copySharedDryRun(copyShared: CopyShared, options?: any) {
+        return CopySharedApiFp(this.configuration).copySharedDryRun(copyShared, options)(this.axios, this.basePath);
+    }
+
+}
+
 
 /**
  * DeployApi - axios parameter creator
@@ -578,6 +845,191 @@ export class ReleaseApi extends BaseAPI {
      */
     public getAll(options?: any) {
         return ReleaseApiFp(this.configuration).getAll(options)(this.axios, this.basePath);
+    }
+
+}
+
+
+/**
+ * RollbackApi - axios parameter creator
+ * @export
+ */
+export const RollbackApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Rollback an environment to a previous stage
+         * @param {Rollback} rollback The Rollback to execute
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        rollback(rollback: Rollback, options: any = {}): RequestArgs {
+            // verify required parameter 'rollback' is not null or undefined
+            if (rollback === null || rollback === undefined) {
+                throw new RequiredError('rollback','Required parameter rollback was null or undefined when calling rollback.');
+            }
+            const localVarPath = `/rollback`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...options.headers};
+            const needsSerialization = (<any>"Rollback" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(rollback !== undefined ? rollback : {}) : (rollback || "");
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Check which instances the Rollback would affect
+         * @param {Rollback} rollback The rollback to dry run
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        rollbackDryRun(rollback: Rollback, options: any = {}): RequestArgs {
+            // verify required parameter 'rollback' is not null or undefined
+            if (rollback === null || rollback === undefined) {
+                throw new RequiredError('rollback','Required parameter rollback was null or undefined when calling rollbackDryRun.');
+            }
+            const localVarPath = `/rollback/dryrun`;
+            const localVarUrlObj = globalImportUrl.parse(localVarPath, true);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            localVarUrlObj.query = {...localVarUrlObj.query, ...localVarQueryParameter, ...options.query};
+            // fix override query string Detail: https://stackoverflow.com/a/7517673/1077943
+            delete localVarUrlObj.search;
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...options.headers};
+            const needsSerialization = (<any>"Rollback" !== "string") || localVarRequestOptions.headers['Content-Type'] === 'application/json';
+            localVarRequestOptions.data =  needsSerialization ? JSON.stringify(rollback !== undefined ? rollback : {}) : (rollback || "");
+
+            return {
+                url: globalImportUrl.format(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * RollbackApi - functional programming interface
+ * @export
+ */
+export const RollbackApiFp = function(configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Rollback an environment to a previous stage
+         * @param {Rollback} rollback The Rollback to execute
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        rollback(rollback: Rollback, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Response> {
+            const localVarAxiosArgs = RollbackApiAxiosParamCreator(configuration).rollback(rollback, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @summary Check which instances the Rollback would affect
+         * @param {Rollback} rollback The rollback to dry run
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        rollbackDryRun(rollback: Rollback, options?: any): (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PendingReleaseInstance>> {
+            const localVarAxiosArgs = RollbackApiAxiosParamCreator(configuration).rollbackDryRun(rollback, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: basePath + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+    }
+};
+
+/**
+ * RollbackApi - factory interface
+ * @export
+ */
+export const RollbackApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    return {
+        /**
+         * 
+         * @summary Rollback an environment to a previous stage
+         * @param {Rollback} rollback The Rollback to execute
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        rollback(rollback: Rollback, options?: any) {
+            return RollbackApiFp(configuration).rollback(rollback, options)(axios, basePath);
+        },
+        /**
+         * 
+         * @summary Check which instances the Rollback would affect
+         * @param {Rollback} rollback The rollback to dry run
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        rollbackDryRun(rollback: Rollback, options?: any) {
+            return RollbackApiFp(configuration).rollbackDryRun(rollback, options)(axios, basePath);
+        },
+    };
+};
+
+/**
+ * RollbackApi - object-oriented interface
+ * @export
+ * @class RollbackApi
+ * @extends {BaseAPI}
+ */
+export class RollbackApi extends BaseAPI {
+    /**
+     * 
+     * @summary Rollback an environment to a previous stage
+     * @param {Rollback} rollback The Rollback to execute
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RollbackApi
+     */
+    public rollback(rollback: Rollback, options?: any) {
+        return RollbackApiFp(this.configuration).rollback(rollback, options)(this.axios, this.basePath);
+    }
+
+    /**
+     * 
+     * @summary Check which instances the Rollback would affect
+     * @param {Rollback} rollback The rollback to dry run
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof RollbackApi
+     */
+    public rollbackDryRun(rollback: Rollback, options?: any) {
+        return RollbackApiFp(this.configuration).rollbackDryRun(rollback, options)(this.axios, this.basePath);
     }
 
 }

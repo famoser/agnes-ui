@@ -25,6 +25,11 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    open_api_server.controller.copyShared:
+        class: App\Controller\CopySharedController
+        tags: ['controller.service_arguments']
+        autowire: true
+
     open_api_server.controller.deploy:
         class: App\Controller\DeployController
         tags: ['controller.service_arguments']
@@ -37,5 +42,10 @@ services:
 
     open_api_server.controller.release:
         class: App\Controller\ReleaseController
+        tags: ['controller.service_arguments']
+        autowire: true
+
+    open_api_server.controller.rollback:
+        class: App\Controller\RollbackController
         tags: ['controller.service_arguments']
         autowire: true

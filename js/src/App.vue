@@ -14,6 +14,8 @@
                justify="center">
           <v-col lg="8">
             <DeployDialog>Deploy</DeployDialog>
+            <RollbackDialog class="ml-2">Rollback</RollbackDialog>
+            <CopySharedDialog class="ml-2">Replicate</CopySharedDialog>
             <InstanceOverview class="mt-6"/>
           </v-col>
         </v-row>
@@ -27,10 +29,14 @@
   import CreateReleaseDialog from "@/components/CreateReleaseDialog.vue";
   import InstanceOverview from "@/components/InstanceOverview.vue";
   import DeployDialog from "@/components/DeployDialog.vue";
+  import RollbackDialog from "@/components/RollbackDialog.vue";
+  import CopySharedDialog from "@/components/CopySharedDialog.vue";
 
   export default Vue.extend({
     name: "App",
     components: {
+      CopySharedDialog,
+      RollbackDialog,
       DeployDialog,
       InstanceOverview,
       CreateReleaseDialog
