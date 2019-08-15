@@ -58,10 +58,13 @@ class CopySharedApi extends AgnesBase implements CopySharedApiInterface
         /** @var \Agnes\Actions\CopyShared[] $copyShareds */
         $copyShareds = $this->createCopyShareds($copyShared, $factory->getInstanceService());
 
+        // filter which can be executed
+        $copySharedAction = $factory->createCopySharedAction();
+        $copyShareds = $copySharedAction->filterCanExecute($copyShareds);
+
         /** @var AcrossInstancesAction[] $acrossInstancesActions */
         $acrossInstancesActions = [];
         foreach ($copyShareds as $copyShared) {
-
             $source = $this->convertAgnesInstanceToInstance($copyShared->getSource());
             $target = $this->convertAgnesInstanceToInstance($copyShared->getTarget());
 
@@ -84,7 +87,7 @@ class CopySharedApi extends AgnesBase implements CopySharedApiInterface
     private function createCopyShareds(CopyShared $copyShared, InstanceService $instanceService)
     {
         $sourceInstances = $instanceService->getInstancesFromInstanceSpecification($copyShared->getSource());
-        $targetInstances = $instanceService->getInstancesFromInstanceSpecification($copyShared->getSource());
+        $targetInstances = $instanceService->getInstancesFromInstanceSpecification($copyShared->getTarget());
 
         /** @var \Agnes\Actions\CopyShared[] $copyShareds */
         $copyShareds = [];

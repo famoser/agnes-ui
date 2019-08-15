@@ -80,6 +80,10 @@ class RollbackApi extends AgnesBase implements RollbackApiInterface
         /** @var \Agnes\Actions\Rollback[] $rollbacks */
         $rollbacks = $this->createRollbacks($rollback, $factory->getInstanceService());
 
+        // filter which can be executed
+        $rollbackAction = $factory->createRollbackAction();
+        $rollbacks = $rollbackAction->filterCanExecute($rollbacks);
+
         /** @var PendingReleaseInstance[] $pendingReleaseInstances */
         $pendingReleaseInstances = [];
         foreach ($rollbacks as $rollback) {

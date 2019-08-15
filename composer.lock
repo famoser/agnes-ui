@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "37c15205ff78d629bd582b3255165198",
+    "content-hash": "e6c5a4b1fd6c7626f2c14c06571ac2c0",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -1385,16 +1385,16 @@
         },
         {
             "name": "famoser/agnes",
-            "version": "v0.12",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/famoser/agnes.git",
-                "reference": "115c56857507fde5582aa1c4d6ac7628850f0341"
+                "reference": "a50b88a8ccaabdffe40ba79dc52e1195c14b92cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/famoser/agnes/zipball/115c56857507fde5582aa1c4d6ac7628850f0341",
-                "reference": "115c56857507fde5582aa1c4d6ac7628850f0341",
+                "url": "https://api.github.com/repos/famoser/agnes/zipball/a50b88a8ccaabdffe40ba79dc52e1195c14b92cc",
+                "reference": "a50b88a8ccaabdffe40ba79dc52e1195c14b92cc",
                 "shasum": ""
             },
             "require": {
@@ -1431,7 +1431,7 @@
                 }
             ],
             "description": "Creates & deploys releases safely to various environments.",
-            "time": "2019-08-15T06:41:00+00:00"
+            "time": "2019-08-15T08:16:18+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -6941,7 +6941,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "famoser/agnes": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

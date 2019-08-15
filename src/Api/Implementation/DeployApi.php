@@ -63,6 +63,7 @@ class DeployApi extends AgnesBase implements DeployApiInterface
         /** @var Deploy[] $deploys */
         $deploys = $this->createDeploys($deployment, $factory->getInstanceService(), $factory->getGithubService());
 
+        // filter valid executions
         $deployAction = $factory->createDeployAction();
         $deploys = $deployAction->filterCanExecute($deploys);
 

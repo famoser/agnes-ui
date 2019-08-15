@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" max-width="1000px" @keydown.esc="dialog = false">
+  <v-dialog v-model="dialog" max-width="1300px" @keydown.esc="dialog = false">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on">
         <slot></slot>
@@ -55,10 +55,11 @@
                 <v-simple-table class="elevation-1">
                   <thead>
                   <tr>
-                    <th colspan="3">source</th>
+                    <th colspan="3" class="grey lighten-3">source</th>
+                    <th class="spacer"></th>
+                    <th colspan="3" class="grey lighten-3">target</th>
+                    <th class="spacer"></th>
                     <th></th>
-                    <th colspan="3">target</th>
-                    <th>release</th>
                   </tr>
                   <tr>
                     <th>server</th>
@@ -69,6 +70,7 @@
                     <th>environment</th>
                     <th>stage</th>
                     <th></th>
+                    <th>release</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -80,6 +82,7 @@
                     <td>{{acrossInstanceAction.target.server}}</td>
                     <td>{{acrossInstanceAction.target.environment}}</td>
                     <td>{{acrossInstanceAction.target.stage}}</td>
+                    <td></td>
                     <td>{{acrossInstanceAction.source.currentReleaseName}}</td>
                   </tr>
                   </tbody>
@@ -94,7 +97,7 @@
         <v-btn @click="dialog = false" :disabled="state === 'copy_shared_active'">Close</v-btn>
         <v-btn color="primary" @click="copyShared()" :disabled="!anyAffectedInstances"
                :loading="state === 'copy_shared_active'">
-          Deploy
+          Replicate
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -123,7 +126,7 @@
 
     private copySharedApi = new CopySharedApi(undefined, process.env.VUE_APP_API_BASE_URL);
 
-    public source: string = "*:*:prod";
+    public source: string = "*:*:production";
     public target: string = "*:*:dev";
 
     private reloadAffectedInstancesTask: any;
@@ -135,12 +138,14 @@
       this.affectedInstances = [];
 
       // debounce reload
+      this.state = 'loading-dry-run';
       if (this.reloadAffectedInstancesTask) {
         clearTimeout(this.reloadAffectedInstancesTask);
       }
       this.reloadAffectedInstancesTask = setTimeout(() => {
-        this.dryRun()
-      }, 1000);
+        this.dryRun();
+        this.reloadAffectedInstancesTask = null;
+      }, 500);
     }
 
     @Watch('source')

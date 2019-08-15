@@ -117,6 +117,7 @@
       this.affectedInstances = [];
 
       // debounce reload
+      this.state = 'loading-dry-run';
       if (this.reloadAffectedInstancesTask) {
         clearTimeout(this.reloadAffectedInstancesTask);
       }

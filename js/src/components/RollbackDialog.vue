@@ -86,7 +86,7 @@
         <v-btn @click="dialog = false" :disabled="state === 'rollback_active'">Close</v-btn>
         <v-btn color="primary" @click="rollback()" :disabled="!anyAffectedInstances"
                :loading="state === 'rollback_active'">
-          Deploy
+          Rollback
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -118,6 +118,7 @@
       this.affectedInstances = [];
 
       // debounce reload
+      this.state = 'loading-dry-run';
       if (this.reloadAffectedInstancesTask) {
         clearTimeout(this.reloadAffectedInstancesTask);
       }
