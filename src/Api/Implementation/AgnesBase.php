@@ -4,7 +4,9 @@
 namespace App\Api\Implementation;
 
 
+use Agnes\Actions\Deploy;
 use Agnes\AgnesFactory;
+use App\Model\Instance;
 use App\Service\ConfigService;
 
 class AgnesBase
@@ -36,5 +38,21 @@ class AgnesBase
         }
 
         return $agnesFactory;
+    }
+
+    /**
+     * @param $agnesInstance
+     * @return Instance
+     */
+    protected function convertAgnesInstanceToInstance(\Agnes\Models\Instance $agnesInstance): Instance
+    {
+        $instance = new Instance();
+
+        $instance->setServer($agnesInstance->getServerName());
+        $instance->setEnvironment($agnesInstance->getEnvironmentName());
+        $instance->setStage($agnesInstance->getStage());
+        $instance->setCurrentReleaseName($agnesInstance->getCurrentReleaseName());
+
+        return $instance;
     }
 }

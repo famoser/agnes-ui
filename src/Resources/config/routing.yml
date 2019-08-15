@@ -2,6 +2,19 @@
 # https://github.com/openapitools/openapi-generator
 # Do not edit the class manually.
 
+# copyShared
+open_api_server_copyShared_copyshared:
+    path:     /copyShared
+    methods:  [POST]
+    defaults:
+        _controller: open_api_server.controller.copyShared:copySharedAction
+
+open_api_server_copyShared_copyshareddryrun:
+    path:     /copyShared/dryrun
+    methods:  [POST]
+    defaults:
+        _controller: open_api_server.controller.copyShared:copySharedDryRunAction
+
 # deploy
 open_api_server_deploy_deploy:
     path:     /deloy
@@ -34,4 +47,17 @@ open_api_server_release_getall:
     methods:  [GET]
     defaults:
         _controller: open_api_server.controller.release:getAllAction
+
+# rollback
+open_api_server_rollback_rollback:
+    path:     /rollback
+    methods:  [POST]
+    defaults:
+        _controller: open_api_server.controller.rollback:rollbackAction
+
+open_api_server_rollback_rollbackdryrun:
+    path:     /rollback/dryrun
+    methods:  [POST]
+    defaults:
+        _controller: open_api_server.controller.rollback:rollbackDryRunAction
 

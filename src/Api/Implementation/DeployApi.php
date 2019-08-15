@@ -68,7 +68,7 @@ class DeployApi extends AgnesBase implements DeployApiInterface
 
         $instances = [];
         foreach ($deploys as $deploy) {
-            $instances[] = $this->convertToInstance($deploy);
+            $instances[] = $this->convertAgnesInstanceToInstance($deploy->getTarget());
         }
 
         return $instances;
@@ -115,22 +115,5 @@ class DeployApi extends AgnesBase implements DeployApiInterface
         }
 
         return null;
-    }
-
-    /**
-     * @param $deploy
-     * @return Instance
-     */
-    private function convertToInstance(Deploy $deploy): Instance
-    {
-        $instance = new Instance();
-
-        $deployTarget = $deploy->getTarget();
-        $instance->setServer($deployTarget->getServerName());
-        $instance->setEnvironment($deployTarget->getEnvironmentName());
-        $instance->setStage($deployTarget->getStage());
-        $instance->setCurrentReleaseName($deployTarget->getCurrentReleaseName());
-
-        return $instance;
     }
 }

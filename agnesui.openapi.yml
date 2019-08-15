@@ -99,6 +99,88 @@ paths:
                 items:
                   $ref: '#/components/schemas/Instance'
 
+  /rollback:
+    post:
+      tags:
+        - rollback
+      summary: Rollback an environment to a previous stage
+      operationId: rollback
+      requestBody:
+        description: The Rollback to execute
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rollback'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+
+  /rollback/dryrun:
+    post:
+      tags:
+        - rollback
+      summary: Check which instances the Rollback would affect
+      operationId: rollbackDryRun
+      requestBody:
+        description: The rollback to dry run
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rollback'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PendingReleaseInstance'
+
+  /copyShared:
+    post:
+      tags:
+        - copyShared
+      summary: Copy the shared data from source to target (replicate source on target).
+      operationId: copyShared
+      requestBody:
+        description: The copy shared action
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CopyShared'
+        required: true
+      responses:
+        201:
+          description: Created
+          content: {}
+
+  /copyShared/dryrun:
+    post:
+      tags:
+        - copyShared
+      summary: Check which instances the copy shared action would affect
+      operationId: copySharedDryRun
+      requestBody:
+        description: The copy shared action to dry run
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CopyShared'
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AcrossInstancesAction'
+
 components:
   schemas:
     Release:
@@ -124,6 +206,47 @@ components:
           type: string
         release:
           type: string
+    Rollback:
+      required:
+        - target
+      type: object
+      properties:
+        target:
+          type: string
+        rollbackFrom:
+          type: string
+        rollbackTo:
+          type: string
+    CopyShared:
+      required:
+        - source
+        - target
+      type: object
+      properties:
+        target:
+          type: string
+        source:
+          type: string
+    AcrossInstancesAction:
+      required:
+        - source
+        - target
+      type: object
+      properties:
+        source:
+          $ref: '#/components/schemas/Instance'
+        target:
+          $ref: '#/components/schemas/Instance'
+    PendingReleaseInstance:
+      required:
+        - pendingReleaseName
+        - instance
+      type:  object
+      properties:
+        pendingReleaseName:
+          type: string
+        instance:
+          $ref: '#/components/schemas/Instance'
     Instance:
       required:
         - server
