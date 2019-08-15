@@ -13,20 +13,18 @@
         <v-container grid-list-md pa-0>
           <v-layout wrap>
             <v-flex xs12 md6>
-              <v-select
+              <v-text-field
                 v-model="branch"
-                :items="branches"
                 label="Branch*"
                 required
-              ></v-select>
+              ></v-text-field>
             </v-flex>
             <v-flex xs12 md6>
-              <v-select
+              <v-text-field
                 v-model="commit"
-                :items="commits"
                 label="commit*"
                 required
-              ></v-select>
+              ></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-textarea
@@ -70,15 +68,10 @@
 
         private readonly latestCommit = "latest";
 
-        public branch: string = "";
-        public commit: string = "";
+        public branch: string = "master";
+        public commit: string = "latest";
         public releaseNotes = "";
         public name = "";
-
-        mounted() {
-            this.branch = this.branches[0];
-            this.commit = this.commits[0];
-        }
 
         createRelease() {
             this.state = 'releasing';
@@ -92,18 +85,10 @@
                 description: this.releaseNotes
             }).then(() => {
               this.dialog = false
-            }).catch((reason) => {
+            }).catch((error) => {
               this.state = 'failed';
-              console.log(reason)
+              console.log(error.response);
             });
-        }
-
-        get branches() {
-            return ["master"];
-        }
-
-        get commits() {
-            return [this.latestCommit];
         }
     }
 </script>

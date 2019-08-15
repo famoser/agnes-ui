@@ -166,9 +166,9 @@
           this.affectedInstances = instances.data;
           this.state = "idle";
         })
-        .catch((reason) => {
+        .catch((error) => {
           this.state = "errored";
-          console.log(reason);
+          console.log(error.response);
         });
     }
 
@@ -185,9 +185,9 @@
           this.state = "idle";
           this.dialog = false;
         })
-        .catch((reason) => {
+        .catch((error) => {
           this.state = "copy_shared_errored";
-          console.log(reason);
+          console.log(error.response);
         });
     }
 

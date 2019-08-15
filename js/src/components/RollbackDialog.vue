@@ -150,9 +150,9 @@
           this.affectedInstances = instances.data;
           this.state = "idle";
         })
-        .catch((reason) => {
+        .catch((error) => {
           this.state = "errored";
-          console.log(reason);
+          console.log(error.response);
         });
     }
 
@@ -169,9 +169,9 @@
           this.state = "idle";
           this.dialog = false;
         })
-        .catch((reason) => {
+        .catch((error) => {
           this.state = "rollback_errored";
-          console.log(reason);
+          console.log(error.response);
         });
     }
 

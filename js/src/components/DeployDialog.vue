@@ -135,9 +135,9 @@
           this.affectedInstances = instances.data;
           this.state = "idle";
         })
-        .catch((reason) => {
+        .catch((error) => {
           this.state = "errored";
-          console.log(reason);
+          console.log(error.response);
         });
     }
 
@@ -154,9 +154,9 @@
           this.dialog = false;
           this.state = "idle";
         })
-        .catch((reason) => {
+        .catch((error) => {
           this.state = "deploy_errored";
-          console.log(reason);
+          console.log(error.response);
         });
     }
 
