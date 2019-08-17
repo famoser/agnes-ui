@@ -5,12 +5,11 @@ namespace App\Api\Implementation;
 
 
 use Agnes\Actions\Deploy;
-use Agnes\Services\Configuration\EditableFile;
+use Agnes\Services\Configuration\File;
 use Agnes\Services\ConfigurationService;
 use Agnes\Services\Github\ReleaseWithAsset;
 use Agnes\Services\GithubService;
 use Agnes\Services\InstanceService;
-use App\Api\App;
 use App\Api\DeployApiInterface;
 use App\Model\Deployment;
 use App\Model\Instance;
@@ -94,7 +93,7 @@ class DeployApi extends AgnesBase implements DeployApiInterface
         }
 
         $instances = $instanceService->getInstancesFromInstanceSpecification($deployment->getTarget());
-        $requiredFiles = $configurationService->getEditableFiles();
+        $requiredFiles = $configurationService->getFiles();
 
         $deploys = [];
         foreach ($instances as $instance) {
@@ -109,19 +108,19 @@ class DeployApi extends AgnesBase implements DeployApiInterface
 
     /**
      * @param \Agnes\Models\Instance $instance
-     * @param EditableFile[] $requiredFiles
+     * @param File[] $configuredFiles
      * @param string[] $files
      * @return string[]|bool
      */
-    private function getFiles(\Agnes\Models\Instance $instance, array $requiredFiles, &$files)
+    private function getFiles(\Agnes\Models\Instance $instance, array $configuredFiles, &$files)
     {
         $foundFiles = $this->getConfigService()->loadFilesForInstance($instance);
 
-        foreach ($requiredFiles as $requiredFile) {
-            $filePath = $requiredFile->getPath();
+        foreach ($configuredFiles as $configuredFile) {
+            $filePath = $configuredFile->getPath();
             if (isset($foundFiles[$filePath])) {
                 $files[$filePath] = $foundFiles[$filePath];
-            } else if ($requiredFile->getIsRequired()) {
+            } else if ($configuredFile->getIsRequired()) {
                 return false;
             }
         }

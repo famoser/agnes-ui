@@ -62,6 +62,7 @@ class ConfigService
         }
 
         $instanceFolder = $repoFolder . DIRECTORY_SEPARATOR .
+            "files" . DIRECTORY_SEPARATOR .
             $instance->getServerName() . DIRECTORY_SEPARATOR .
             $instance->getEnvironmentName() . DIRECTORY_SEPARATOR .
             $instance->getStage();

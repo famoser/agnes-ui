@@ -15,3 +15,5 @@ public/*
 # agnes build
 .build
 .files
+
+.htpasswd
