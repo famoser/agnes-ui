@@ -26,6 +26,14 @@ class AgnesBase
     }
 
     /**
+     * @return ConfigService
+     */
+    protected function getConfigService(): ConfigService
+    {
+        return $this->configService;
+    }
+
+    /**
      * @return AgnesFactory
      * @throws \Exception
      */

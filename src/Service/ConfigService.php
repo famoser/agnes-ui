@@ -4,6 +4,8 @@
 namespace App\Service;
 
 
+use Agnes\Models\Instance;
+use Doctrine\Common\Annotations\IndexedReader;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -49,6 +51,57 @@ class ConfigService
     }
 
     /**
+     * @param Instance $instance
+     * @return string[]
+     */
+    public function loadFilesForInstance(Instance $instance)
+    {
+        $repoFolder = $this->getConfigRepoPath();
+        if ($repoFolder === false) {
+            return [];
+        }
+
+        $instanceFolder = $repoFolder . DIRECTORY_SEPARATOR .
+            $instance->getServerName() . DIRECTORY_SEPARATOR .
+            $instance->getEnvironmentName() . DIRECTORY_SEPARATOR .
+            $instance->getStage();
+
+        $filePaths = $this->getFilesRecursively($instanceFolder);
+
+        $result = [];
+        $instanceFolderPrefixLength = strlen($instanceFolder) + 1;
+        foreach ($filePaths as $filePath) {
+            $content = file_get_contents($filePath);
+            $key = substr($filePath, $instanceFolderPrefixLength);
+
+            $result[$key] = $content;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $folder
+     * @return string[]
+     */
+    private function getFilesRecursively(string $folder)
+    {
+        $directoryElements = scandir($folder);
+
+        $result = [];
+        foreach ($directoryElements as $key => $value) {
+            $path = realpath($folder . DIRECTORY_SEPARATOR . $value);
+            if (!is_dir($path)) {
+                $result[] = $path;
+            } else if ($value != "." && $value != "..") {
+                $result = array_merge($result, $this->getFilesRecursively($path));
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @return string[]
      */
     private function getTargetRepositoryConfigs()
@@ -69,13 +122,10 @@ class ConfigService
      */
     private function getConfigRepositoryConfigs()
     {
-        // empty result if no config repo specified
-        if (strlen($this->configRepository) === 0) {
+        $repoFolder = $this->getConfigRepoPath();
+        if ($repoFolder === false) {
             return [];
         }
-
-        $repoFolder = $this->repositoryPath . DIRECTORY_SEPARATOR . "config";
-        $this->ensureRepositoryExists($repoFolder, $this->configRepository);
 
         return glob($repoFolder . DIRECTORY_SEPARATOR . "*.yml");
     }
@@ -96,5 +146,20 @@ class ConfigService
         }
 
         exec("cd $repoFolder && git pull");
+    }
+
+    /**
+     * @return string
+     */
+    private function getConfigRepoPath()
+    {
+        if (strlen($this->configRepository) === 0) {
+            return false;
+        }
+
+        $repoFolder = $this->repositoryPath . DIRECTORY_SEPARATOR . "config";
+        $this->ensureRepositoryExists($repoFolder, $this->configRepository);
+
+        return $repoFolder;
     }
 }
