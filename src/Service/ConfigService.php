@@ -51,58 +51,6 @@ class ConfigService
     }
 
     /**
-     * @param Instance $instance
-     * @return string[]
-     */
-    public function loadFilesForInstance(Instance $instance)
-    {
-        $repoFolder = $this->getConfigRepoPath();
-        if ($repoFolder === false) {
-            return [];
-        }
-
-        $instanceFolder = $repoFolder . DIRECTORY_SEPARATOR .
-            "files" . DIRECTORY_SEPARATOR .
-            $instance->getServerName() . DIRECTORY_SEPARATOR .
-            $instance->getEnvironmentName() . DIRECTORY_SEPARATOR .
-            $instance->getStage();
-
-        $filePaths = $this->getFilesRecursively($instanceFolder);
-
-        $result = [];
-        $instanceFolderPrefixLength = strlen($instanceFolder) + 1;
-        foreach ($filePaths as $filePath) {
-            $content = file_get_contents($filePath);
-            $key = substr($filePath, $instanceFolderPrefixLength);
-
-            $result[$key] = $content;
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param string $folder
-     * @return string[]
-     */
-    private function getFilesRecursively(string $folder)
-    {
-        $directoryElements = scandir($folder);
-
-        $result = [];
-        foreach ($directoryElements as $key => $value) {
-            $path = realpath($folder . DIRECTORY_SEPARATOR . $value);
-            if (!is_dir($path)) {
-                $result[] = $path;
-            } else if ($value != "." && $value != "..") {
-                $result = array_merge($result, $this->getFilesRecursively($path));
-            }
-        }
-
-        return $result;
-    }
-
-    /**
      * @return string[]
      */
     private function getTargetRepositoryConfigs()
@@ -152,7 +100,7 @@ class ConfigService
     /**
      * @return string
      */
-    private function getConfigRepoPath()
+    public function getConfigRepoPath()
     {
         if (strlen($this->configRepository) === 0) {
             return false;

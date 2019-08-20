@@ -4,20 +4,23 @@
 namespace App\Api\Implementation;
 
 
+use Agnes\Actions\AbstractAction;
 use Agnes\Actions\Deploy;
+use Agnes\Actions\DeployAction;
+use Agnes\AgnesFactory;
 use Agnes\Services\Configuration\File;
 use Agnes\Services\ConfigurationService;
 use Agnes\Services\Github\ReleaseWithAsset;
 use Agnes\Services\GithubService;
 use Agnes\Services\InstanceService;
 use App\Api\DeployApiInterface;
+use App\Model\CopyShared;
 use App\Model\Deployment;
 use App\Model\Instance;
 use Http\Client\Exception;
 
-class DeployApi extends AgnesBase implements DeployApiInterface
+class DeployApi extends AgnesActionBase implements DeployApiInterface
 {
-
     /**
      * Operation deploy
      *
@@ -29,18 +32,12 @@ class DeployApi extends AgnesBase implements DeployApiInterface
      *
      * @return void
      *
-     * @throws Exception
      * @throws \Exception
      */
     public function deploy(Deployment $deployment, &$responseCode, array &$responseHeaders)
     {
-        $factory = $this->getConfiguredAgnesFactory();
-
-        /** @var Deploy[] $deploys */
-        $deploys = $this->createDeploys($deployment, $factory->getInstanceService(), $factory->getGithubService(), $factory->getConfigurationService());
-
-        $deployAction = $factory->createDeployAction();
-        $deployAction->executeMultiple($deploys);
+        $deploys = $this->createExecutablePayloads($deployment);
+        $this->executePayloads($deploys);
     }
 
     /**
@@ -55,18 +52,11 @@ class DeployApi extends AgnesBase implements DeployApiInterface
      * @return Instance[]
      *
      * @throws \Exception
-     * @throws Exception
      */
     public function deployDryRun(Deployment $deployment, &$responseCode, array &$responseHeaders)
     {
-        $factory = $this->getConfiguredAgnesFactory();
-
         /** @var Deploy[] $deploys */
-        $deploys = $this->createDeploys($deployment, $factory->getInstanceService(), $factory->getGithubService(), $factory->getConfigurationService());
-
-        // filter valid executions
-        $deployAction = $factory->createDeployAction();
-        $deploys = $deployAction->filterCanExecute($deploys);
+        $deploys = $this->createExecutablePayloads($deployment);
 
         $instances = [];
         foreach ($deploys as $deploy) {
@@ -77,72 +67,27 @@ class DeployApi extends AgnesBase implements DeployApiInterface
     }
 
     /**
-     * @param Deployment $deployment
-     * @param InstanceService $instanceService
-     * @param GithubService $githubService
-     * @param ConfigurationService $configurationService
+     * @param Deployment $configuration
+     * @param DeployAction $action
      * @return Deploy[]
      * @throws Exception
-     * @throws \Exception
      */
-    private function createDeploys(Deployment $deployment, InstanceService $instanceService, GithubService $githubService, ConfigurationService $configurationService)
+    protected function createPayloads($configuration, $action): array
     {
-        $releaseWithAsset = $this->getRelease($deployment->getRelease(), $githubService);
-        if ($releaseWithAsset == null) {
-            return [];
+        $configFolder = $this->getConfigService()->getConfigRepoPath();
+        if ($configFolder === false) {
+            $configFolder = null;
         }
 
-        $instances = $instanceService->getInstancesFromInstanceSpecification($deployment->getTarget());
-        $requiredFiles = $configurationService->getFiles();
-
-        $deploys = [];
-        foreach ($instances as $instance) {
-            $allRequiredFilesExist = $this->getFiles($instance, $requiredFiles, $files);
-            if ($allRequiredFilesExist) {
-                $deploys[] = new Deploy($releaseWithAsset, $instance, $files);
-            }
-        }
-
-        return $deploys;
+        return $action->createMany($configuration->getRelease(), $configuration->getTarget(), $configFolder, false);
     }
 
     /**
-     * @param \Agnes\Models\Instance $instance
-     * @param File[] $configuredFiles
-     * @param string[] $files
-     * @return string[]|bool
+     * @param AgnesFactory $factory
+     * @return AbstractAction
      */
-    private function getFiles(\Agnes\Models\Instance $instance, array $configuredFiles, &$files)
+    protected function createAction(AgnesFactory $factory): AbstractAction
     {
-        $foundFiles = $this->getConfigService()->loadFilesForInstance($instance);
-
-        foreach ($configuredFiles as $configuredFile) {
-            $filePath = $configuredFile->getPath();
-            if (isset($foundFiles[$filePath])) {
-                $files[$filePath] = $foundFiles[$filePath];
-            } else if ($configuredFile->getIsRequired()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param string $releaseName
-     * @param GithubService $githubService
-     * @return ReleaseWithAsset|null
-     * @throws Exception
-     */
-    private function getRelease(string $releaseName, GithubService $githubService)
-    {
-        $releases = $githubService->releases();
-        foreach ($releases as $release) {
-            if ($release->getName() === $releaseName) {
-                return $release;
-            }
-        }
-
-        return null;
+        return $factory->createDeployAction();
     }
 }

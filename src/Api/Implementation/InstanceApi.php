@@ -11,7 +11,6 @@ use App\Model\Release;
 
 class InstanceApi extends AgnesBase implements InstanceApiInterface
 {
-
     /**
      * Operation getAll
      *
@@ -26,7 +25,7 @@ class InstanceApi extends AgnesBase implements InstanceApiInterface
      */
     public function getAll(&$responseCode, array &$responseHeaders)
     {
-        $instanceService = $this->getConfiguredAgnesFactory()->getInstanceService();
+        $instanceService = $this->createConfiguredAgnesFactory()->getInstanceService();
 
         $instances = [];
         foreach ($instanceService->getInstancesByFilter(null) as $item) {

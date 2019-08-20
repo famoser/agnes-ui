@@ -4,12 +4,18 @@
 namespace App\Api\Implementation;
 
 
+use Agnes\Actions\AbstractAction;
+use Agnes\Actions\AbstractPayload;
+use Agnes\Actions\CopySharedAction;
 use Agnes\Actions\Deploy;
 use Agnes\AgnesFactory;
+use App\Model\CopyShared;
 use App\Model\Instance;
 use App\Service\ConfigService;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
+use Symfony\Component\Console\Output\NullOutput;
 
-class AgnesBase
+abstract class AgnesBase
 {
     /**
      * @var ConfigService
@@ -23,6 +29,7 @@ class AgnesBase
     public function __construct(ConfigService $configService)
     {
         $this->configService = $configService;
+
     }
 
     /**
@@ -37,7 +44,7 @@ class AgnesBase
      * @return AgnesFactory
      * @throws \Exception
      */
-    protected function getConfiguredAgnesFactory()
+    protected function createConfiguredAgnesFactory()
     {
         $agnesFactory = new AgnesFactory();
 
@@ -46,21 +53,5 @@ class AgnesBase
         }
 
         return $agnesFactory;
-    }
-
-    /**
-     * @param $agnesInstance
-     * @return Instance
-     */
-    protected function convertAgnesInstanceToInstance(\Agnes\Models\Instance $agnesInstance): Instance
-    {
-        $instance = new Instance();
-
-        $instance->setServer($agnesInstance->getServerName());
-        $instance->setEnvironment($agnesInstance->getEnvironmentName());
-        $instance->setStage($agnesInstance->getStage());
-        $instance->setCurrentReleaseName($agnesInstance->getCurrentReleaseName());
-
-        return $instance;
     }
 }

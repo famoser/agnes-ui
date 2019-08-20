@@ -4,13 +4,16 @@
 namespace App\Api\Implementation;
 
 
+use Agnes\Actions\AbstractAction;
+use Agnes\Actions\ReleaseAction;
+use Agnes\AgnesFactory;
 use Agnes\Services\GithubService;
 use App\Api\App;
 use App\Api\ReleaseApiInterface;
 use App\Model\Release;
 use Http\Client\Exception;
 
-class ReleaseApi extends AgnesBase implements ReleaseApiInterface
+class ReleaseApi extends AgnesActionBase implements ReleaseApiInterface
 {
     /**
      * Operation add
@@ -26,13 +29,8 @@ class ReleaseApi extends AgnesBase implements ReleaseApiInterface
      */
     public function add(Release $release, &$responseCode, array &$responseHeaders)
     {
-        $agnesFactory = $this->getConfiguredAgnesFactory();
-        $releaseService = $agnesFactory->createReleaseAction();
-
-        $responseCode = 201;
-
-        $agnesRelease = new \Agnes\Actions\Release($release->getName(), $release->getCommitish(), $release->getDescription());
-        $releaseService->execute($agnesRelease);
+        $releases = $this->createExecutablePayloads($release);
+        $this->executePayloads($releases);
     }
 
     /**
@@ -50,7 +48,7 @@ class ReleaseApi extends AgnesBase implements ReleaseApiInterface
      */
     public function getAll(&$responseCode, array &$responseHeaders)
     {
-        $factory = $this->getConfiguredAgnesFactory();
+        $factory = $this->createConfiguredAgnesFactory();
 
         $githubService = $factory->getGithubService();
 
@@ -79,5 +77,30 @@ class ReleaseApi extends AgnesBase implements ReleaseApiInterface
         }
 
         return $releases;
+    }
+
+    /**
+     * @param AgnesFactory $factory
+     * @return AbstractAction
+     */
+    protected function createAction(AgnesFactory $factory): AbstractAction
+    {
+        return $factory->createReleaseAction();
+    }
+
+    /**
+     * @param Release $configuration
+     * @param ReleaseAction $action
+     * @return array
+     */
+    protected function createPayloads($configuration, $action): array
+    {
+        $release = $action->tryCreate($configuration->getName(), $configuration->getCommitish(), $configuration->getDescription());
+
+        if ($release === null) {
+            return [];
+        }
+
+        return [$release];
     }
 }

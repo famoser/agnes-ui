@@ -4,6 +4,9 @@
 namespace App\Api\Implementation;
 
 
+use Agnes\Actions\AbstractAction;
+use Agnes\Actions\RollbackAction;
+use Agnes\AgnesFactory;
 use Agnes\Services\InstanceService;
 use App\Api\App;
 use App\Api\RollbackApiInterface;
@@ -12,7 +15,7 @@ use App\Model\Instance;
 use App\Model\PendingReleaseInstance;
 use App\Model\Rollback;
 
-class RollbackApi extends AgnesBase implements RollbackApiInterface
+class RollbackApi extends AgnesActionBase implements RollbackApiInterface
 {
     /**
      * Operation rollback
@@ -29,49 +32,8 @@ class RollbackApi extends AgnesBase implements RollbackApiInterface
      */
     public function rollback(Rollback $rollback, &$responseCode, array &$responseHeaders)
     {
-        $factory = $this->getConfiguredAgnesFactory();
-
-        /** @var \Agnes\Actions\Rollback[] $rollbacks */
-        $rollbacks = $this->createRollbacks($rollback, $factory->getInstanceService());
-
-        $rollbackAction = $factory->createRollbackAction();
-        $rollbackAction->executeMultiple($rollbacks);
-    }
-
-    /**
-     * @param Rollback $rollback
-     * @param InstanceService $instanceService
-     * @return Rollback[]
-     * @throws \Exception
-     */
-    private function createRollbacks(Rollback $rollback, InstanceService $instanceService): array
-    {
-        $targets = $instanceService->getInstancesFromInstanceSpecification($rollback->getTarget());
-
-        /**
-         * @param $argument
-         * @return string|null
-         */
-        $nonEmptyStringOrNull = function ($argument) {
-            if ($argument === null || !is_string($argument) || strlen(trim($argument)) === 0) {
-                return null;
-            }
-
-            return $argument;
-        };
-
-        /** @var Rollback[] $rollbacks */
-        $rollbacks = [];
-        foreach ($targets as $target) {
-            $rollbackTo = $nonEmptyStringOrNull($rollback->getRollbackTo());
-            $rollbackFrom = $nonEmptyStringOrNull($rollback->getRollbackFrom());
-            $rollbackInstallation = $target->getRollbackTarget($rollbackTo, $rollbackFrom);
-            if ($rollbackInstallation !== null) {
-                $rollbacks[] = new \Agnes\Actions\Rollback($target, $rollbackInstallation);
-            }
-        }
-
-        return $rollbacks;
+        $rollbacks = $this->createExecutablePayloads($rollback);
+        $this->executePayloads($rollbacks);
     }
 
     /**
@@ -89,14 +51,8 @@ class RollbackApi extends AgnesBase implements RollbackApiInterface
      */
     public function rollbackDryRun(Rollback $rollback, &$responseCode, array &$responseHeaders)
     {
-        $factory = $this->getConfiguredAgnesFactory();
-
         /** @var \Agnes\Actions\Rollback[] $rollbacks */
-        $rollbacks = $this->createRollbacks($rollback, $factory->getInstanceService());
-
-        // filter which can be executed
-        $rollbackAction = $factory->createRollbackAction();
-        $rollbacks = $rollbackAction->filterCanExecute($rollbacks);
+        $rollbacks = $this->createExecutablePayloads($rollback);
 
         /** @var PendingReleaseInstance[] $pendingReleaseInstances */
         $pendingReleaseInstances = [];
@@ -111,5 +67,40 @@ class RollbackApi extends AgnesBase implements RollbackApiInterface
         }
 
         return $pendingReleaseInstances;
+    }
+
+    /**
+     * @param AgnesFactory $factory
+     * @return AbstractAction
+     */
+    protected function createAction(AgnesFactory $factory): AbstractAction
+    {
+        return $factory->createRollbackAction();
+    }
+
+    /**
+     * @param Rollback $configuration
+     * @param RollbackAction $action
+     * @return array
+     * @throws \Exception
+     */
+    protected function createPayloads($configuration, $action): array
+    {
+        /**
+         * @param $argument
+         * @return string|null
+         */
+        $nonEmptyStringOrNull = function ($argument) {
+            if ($argument === null || !is_string($argument) || strlen(trim($argument)) === 0) {
+                return null;
+            }
+
+            return $argument;
+        };
+
+        $rollbackTo = $nonEmptyStringOrNull($configuration->getRollbackTo());
+        $rollbackFrom = $nonEmptyStringOrNull($configuration->getRollbackFrom());
+
+        return $action->createMany($configuration->getTarget(), $rollbackTo, $rollbackFrom);
     }
 }

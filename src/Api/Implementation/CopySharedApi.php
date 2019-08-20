@@ -4,15 +4,19 @@
 namespace App\Api\Implementation;
 
 
+use Agnes\Actions\AbstractAction;
+use Agnes\Actions\AbstractPayload;
+use Agnes\Actions\CopySharedAction;
 use Agnes\Actions\Deploy;
 use Agnes\Actions\Rollback;
+use Agnes\AgnesFactory;
 use Agnes\Services\InstanceService;
 use App\Api\App;
 use App\Api\CopySharedApiInterface;
 use App\Model\AcrossInstancesAction;
 use App\Model\CopyShared;
 
-class CopySharedApi extends AgnesBase implements CopySharedApiInterface
+class CopySharedApi extends AgnesActionBase implements CopySharedApiInterface
 {
     /**
      * Operation copyShared
@@ -29,13 +33,8 @@ class CopySharedApi extends AgnesBase implements CopySharedApiInterface
      */
     public function copyShared(CopyShared $copyShared, &$responseCode, array &$responseHeaders)
     {
-        $factory = $this->getConfiguredAgnesFactory();
-
-        /** @var \Agnes\Actions\CopyShared[] $copyShareds */
-        $copyShareds = $this->createCopyShareds($copyShared, $factory->getInstanceService());
-
-        $copySharedAction = $factory->createCopySharedAction();
-        $copySharedAction->executeMultiple($copyShareds);
+        $copyShareds = $this->createExecutablePayloads($copyShared);
+        $this->executePayloads($copyShareds);
     }
 
     /**
@@ -53,14 +52,8 @@ class CopySharedApi extends AgnesBase implements CopySharedApiInterface
      */
     public function copySharedDryRun(CopyShared $copyShared, &$responseCode, array &$responseHeaders)
     {
-        $factory = $this->getConfiguredAgnesFactory();
-
         /** @var \Agnes\Actions\CopyShared[] $copyShareds */
-        $copyShareds = $this->createCopyShareds($copyShared, $factory->getInstanceService());
-
-        // filter which can be executed
-        $copySharedAction = $factory->createCopySharedAction();
-        $copyShareds = $copySharedAction->filterCanExecute($copyShareds);
+        $copyShareds = $this->createExecutablePayloads($copyShared);
 
         /** @var AcrossInstancesAction[] $acrossInstancesActions */
         $acrossInstancesActions = [];
@@ -79,25 +72,22 @@ class CopySharedApi extends AgnesBase implements CopySharedApiInterface
     }
 
     /**
-     * @param CopyShared $copyShared
-     * @param InstanceService $instanceService
-     * @return \Agnes\Actions\CopyShared[]|array
+     * @param CopyShared $configuration
+     * @param CopySharedAction $action
+     * @return \Agnes\Actions\CopyShared[]
      * @throws \Exception
      */
-    private function createCopyShareds(CopyShared $copyShared, InstanceService $instanceService)
+    protected function createPayloads($configuration, $action): array
     {
-        $sourceInstances = $instanceService->getInstancesFromInstanceSpecification($copyShared->getSource());
-        $targetInstances = $instanceService->getInstancesFromInstanceSpecification($copyShared->getTarget());
+        return $action->createMany($configuration->getSource(), $configuration->getTarget());
+    }
 
-        /** @var \Agnes\Actions\CopyShared[] $copyShareds */
-        $copyShareds = [];
-        foreach ($targetInstances as $targetInstance) {
-            $matchingInstances = $targetInstance->getSameEnvironmentInstances($sourceInstances);
-            if (count($matchingInstances) === 1) {
-                $copyShareds[] = new \Agnes\Actions\CopyShared($matchingInstances[0], $targetInstance);
-            }
-        }
-
-        return $copyShareds;
+    /**
+     * @param AgnesFactory $factory
+     * @return AbstractAction
+     */
+    protected function createAction(AgnesFactory $factory): AbstractAction
+    {
+        return $factory->createCopySharedAction();
     }
 }
