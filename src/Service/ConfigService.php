@@ -4,8 +4,7 @@
 namespace App\Service;
 
 
-use Agnes\Models\Instance;
-use Doctrine\Common\Annotations\IndexedReader;
+use FilesystemIterator;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
@@ -90,7 +89,7 @@ class ConfigService
         }
 
         // if dir empty, possibly clone failed before. hence we repeat
-        if (!(new \FilesystemIterator($repoFolder))->valid()) {
+        if (!(new FilesystemIterator($repoFolder))->valid()) {
             exec("cd $repoFolder && git clone $repository .");
         }
 

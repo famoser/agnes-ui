@@ -29,9 +29,9 @@
 
 namespace App\Model;
 
-use Symfony\Component\Validator\Constraints as Assert;
-use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Type;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class representing the PendingReleaseInstance model.
@@ -106,7 +106,7 @@ class PendingReleaseInstance
     /**
      * Sets instance.
      *
-     * @param App\Model\Instance $instance
+     * @param Instance $instance
      *
      * @return $this
      */

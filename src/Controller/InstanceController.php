@@ -29,14 +29,11 @@
 
 namespace App\Controller;
 
-use \Exception;
-use JMS\Serializer\Exception\RuntimeException as SerializerRuntimeException;
+use App\Api\InstanceApiInterface;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\Validator\Constraints as Assert;
-use App\Api\InstanceApiInterface;
-use App\Model\Instance;
 
 /**
  * InstanceController Class Doc Comment
@@ -115,6 +112,8 @@ class InstanceController extends Controller
     /**
      * Returns the handler for this API controller.
      * @return InstanceApiInterface
+     * @throws Exception
+     * @throws Exception
      */
     public function getApiHandler()
     {

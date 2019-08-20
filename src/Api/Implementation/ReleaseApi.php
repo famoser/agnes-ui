@@ -8,7 +8,6 @@ use Agnes\Actions\AbstractAction;
 use Agnes\Actions\ReleaseAction;
 use Agnes\AgnesFactory;
 use Agnes\Services\GithubService;
-use App\Api\App;
 use App\Api\ReleaseApiInterface;
 use App\Model\Release;
 use Http\Client\Exception;

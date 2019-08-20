@@ -5,16 +5,12 @@ namespace App\Api\Implementation;
 
 
 use Agnes\Actions\AbstractAction;
-use Agnes\Actions\AbstractPayload;
 use Agnes\Actions\CopySharedAction;
-use Agnes\Actions\Deploy;
-use Agnes\Actions\Rollback;
 use Agnes\AgnesFactory;
-use Agnes\Services\InstanceService;
-use App\Api\App;
 use App\Api\CopySharedApiInterface;
 use App\Model\AcrossInstancesAction;
 use App\Model\CopyShared;
+use Exception;
 
 class CopySharedApi extends AgnesActionBase implements CopySharedApiInterface
 {
@@ -29,7 +25,7 @@ class CopySharedApi extends AgnesActionBase implements CopySharedApiInterface
      *
      * @return void
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function copyShared(CopyShared $copyShared, &$responseCode, array &$responseHeaders)
     {
@@ -48,7 +44,7 @@ class CopySharedApi extends AgnesActionBase implements CopySharedApiInterface
      *
      * @return AcrossInstancesAction[]
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function copySharedDryRun(CopyShared $copyShared, &$responseCode, array &$responseHeaders)
     {
@@ -75,7 +71,7 @@ class CopySharedApi extends AgnesActionBase implements CopySharedApiInterface
      * @param CopyShared $configuration
      * @param CopySharedAction $action
      * @return \Agnes\Actions\CopyShared[]
-     * @throws \Exception
+     * @throws Exception
      */
     protected function createPayloads($configuration, $action): array
     {

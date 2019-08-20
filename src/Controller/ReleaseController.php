@@ -29,14 +29,13 @@
 
 namespace App\Controller;
 
-use \Exception;
+use App\Api\ReleaseApiInterface;
+use Exception;
 use JMS\Serializer\Exception\RuntimeException as SerializerRuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Api\ReleaseApiInterface;
-use App\Model\Release;
 
 /**
  * ReleaseController Class Doc Comment
@@ -192,6 +191,8 @@ class ReleaseController extends Controller
     /**
      * Returns the handler for this API controller.
      * @return ReleaseApiInterface
+     * @throws Exception
+     * @throws Exception
      */
     public function getApiHandler()
     {

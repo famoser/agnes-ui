@@ -30,6 +30,7 @@
 namespace App\Controller;
 
 use App\Api\ApiServer;
+use Exception;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -118,7 +119,6 @@ class Controller extends AbstractController
      * Serializes data to a given type format.
      *
      * @param mixed $data The data to serialize.
-     * @param string $class The source data class.
      * @param string $format The target serialization format.
      *
      * @return string A serialized data string.
@@ -159,11 +159,11 @@ class Controller extends AbstractController
     /**
      * Converts an exception to a serializable array.
      *
-     * @param \Exception|null $exception
+     * @param Exception|null $exception
      *
      * @return array
      */
-    private function exceptionToArray(\Exception $exception = null)
+    private function exceptionToArray(Exception $exception = null)
     {
         if (null === $exception) {
             return null;

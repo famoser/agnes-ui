@@ -28,7 +28,6 @@
 
 namespace App\Api;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Model\Release;
 
 /**
@@ -47,12 +46,11 @@ interface ReleaseApiInterface
      *
      * Add a new release
      *
-     * @param  App\Model\Release $release  The release to be created (required)
-     * @param  integer $responseCode     The HTTP response code to return
-     * @param  array   $responseHeaders  Additional HTTP headers to return with the response ()
+     * @param Release $release The release to be created (required)
+     * @param integer $responseCode The HTTP response code to return
+     * @param array $responseHeaders Additional HTTP headers to return with the response ()
      *
      * @return void
-     *
      */
     public function add(Release $release, &$responseCode, array &$responseHeaders);
 

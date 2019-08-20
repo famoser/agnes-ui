@@ -6,13 +6,10 @@ namespace App\Api\Implementation;
 
 use Agnes\Actions\AbstractAction;
 use Agnes\Actions\AbstractPayload;
-use Agnes\Actions\CopySharedAction;
-use Agnes\Actions\Deploy;
+use Agnes\Actions\CopyShared;
 use Agnes\AgnesFactory;
-use App\Model\CopyShared;
 use App\Model\Instance;
-use App\Service\ConfigService;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
+use Exception;
 use Symfony\Component\Console\Output\NullOutput;
 
 abstract class AgnesActionBase extends AgnesBase
@@ -24,7 +21,7 @@ abstract class AgnesActionBase extends AgnesBase
 
     /**
      * @return AbstractAction
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getOrCreateAction()
     {
@@ -56,7 +53,7 @@ abstract class AgnesActionBase extends AgnesBase
      * @param AbstractAction $copySharedAction
      * @param AbstractPayload[] $payloads
      * @return AbstractPayload[]
-     * @throws \Exception
+     * @throws Exception
      */
     protected function filterExecutablePayloads(AbstractAction $copySharedAction, array $payloads): array
     {
@@ -71,9 +68,8 @@ abstract class AgnesActionBase extends AgnesBase
     }
 
     /**
-     * @param AbstractAction $copySharedAction
      * @param AbstractPayload[] $payloads
-     * @throws \Exception
+     * @throws Exception
      */
     protected function executePayloads(array $payloads)
     {
@@ -88,8 +84,8 @@ abstract class AgnesActionBase extends AgnesBase
 
     /**
      * @param mixed $configuration
-     * @return \Agnes\Actions\CopyShared[]|array
-     * @throws \Exception
+     * @return CopyShared[]|array
+     * @throws Exception
      */
     protected function createExecutablePayloads($configuration)
     {

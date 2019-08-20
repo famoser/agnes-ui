@@ -4,16 +4,9 @@
 namespace App\Api\Implementation;
 
 
-use Agnes\Actions\AbstractAction;
-use Agnes\Actions\AbstractPayload;
-use Agnes\Actions\CopySharedAction;
-use Agnes\Actions\Deploy;
 use Agnes\AgnesFactory;
-use App\Model\CopyShared;
-use App\Model\Instance;
 use App\Service\ConfigService;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
-use Symfony\Component\Console\Output\NullOutput;
+use Exception;
 
 abstract class AgnesBase
 {
@@ -42,7 +35,7 @@ abstract class AgnesBase
 
     /**
      * @return AgnesFactory
-     * @throws \Exception
+     * @throws Exception
      */
     protected function createConfiguredAgnesFactory()
     {

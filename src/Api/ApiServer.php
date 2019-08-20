@@ -4,6 +4,8 @@
 namespace App\Api;
 
 
+use Exception;
+
 class ApiServer
 {
     /**
@@ -51,7 +53,7 @@ class ApiServer
     /**
      * @param string $name
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     public function getApiHandler(string $name)
     {
@@ -67,7 +69,7 @@ class ApiServer
             case "rollback":
                 return $this->rollbackApi;
             default:
-                throw new \Exception("handler not implemented");
+                throw new Exception("handler not implemented");
         }
     }
 

@@ -4,10 +4,9 @@
 namespace App\Api\Implementation;
 
 
-use Agnes\Models\Filter;
 use App\Api\InstanceApiInterface;
 use App\Model\Instance;
-use App\Model\Release;
+use Exception;
 
 class InstanceApi extends AgnesBase implements InstanceApiInterface
 {
@@ -21,7 +20,7 @@ class InstanceApi extends AgnesBase implements InstanceApiInterface
      *
      * @return Instance[]
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function getAll(&$responseCode, array &$responseHeaders)
     {

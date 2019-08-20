@@ -29,15 +29,13 @@
 
 namespace App\Controller;
 
-use \Exception;
+use App\Api\DeployApiInterface;
+use Exception;
 use JMS\Serializer\Exception\RuntimeException as SerializerRuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Api\DeployApiInterface;
-use App\Model\Deployment;
-use App\Model\Instance;
 
 /**
  * DeployController Class Doc Comment
@@ -217,6 +215,8 @@ class DeployController extends Controller
     /**
      * Returns the handler for this API controller.
      * @return DeployApiInterface
+     * @throws Exception
+     * @throws Exception
      */
     public function getApiHandler()
     {

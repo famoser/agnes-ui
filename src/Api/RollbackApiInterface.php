@@ -28,8 +28,6 @@
 
 namespace App\Api;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use App\Model\PendingReleaseInstance;
 use App\Model\Rollback;
 
 /**
@@ -48,12 +46,11 @@ interface RollbackApiInterface
      *
      * Rollback an environment to a previous stage
      *
-     * @param  App\Model\Rollback $rollback  The Rollback to execute (required)
-     * @param  integer $responseCode     The HTTP response code to return
-     * @param  array   $responseHeaders  Additional HTTP headers to return with the response ()
+     * @param Rollback $rollback The Rollback to execute (required)
+     * @param integer $responseCode The HTTP response code to return
+     * @param array $responseHeaders Additional HTTP headers to return with the response ()
      *
      * @return void
-     *
      */
     public function rollback(Rollback $rollback, &$responseCode, array &$responseHeaders);
 
@@ -62,12 +59,11 @@ interface RollbackApiInterface
      *
      * Check which instances the Rollback would affect
      *
-     * @param  App\Model\Rollback $rollback  The rollback to dry run (required)
-     * @param  integer $responseCode     The HTTP response code to return
-     * @param  array   $responseHeaders  Additional HTTP headers to return with the response ()
+     * @param Rollback $rollback The rollback to dry run (required)
+     * @param integer $responseCode The HTTP response code to return
+     * @param array $responseHeaders Additional HTTP headers to return with the response ()
      *
      * @return App\Model\PendingReleaseInstance[]
-     *
      */
     public function rollbackDryRun(Rollback $rollback, &$responseCode, array &$responseHeaders);
 }

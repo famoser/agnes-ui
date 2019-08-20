@@ -28,8 +28,6 @@
 
 namespace App\Api;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use App\Model\AcrossInstancesAction;
 use App\Model\CopyShared;
 
 /**
@@ -48,12 +46,11 @@ interface CopySharedApiInterface
      *
      * Copy the shared data from source to target (replicate source on target).
      *
-     * @param  App\Model\CopyShared $copyShared  The copy shared action (required)
-     * @param  integer $responseCode     The HTTP response code to return
-     * @param  array   $responseHeaders  Additional HTTP headers to return with the response ()
+     * @param CopyShared $copyShared The copy shared action (required)
+     * @param integer $responseCode The HTTP response code to return
+     * @param array $responseHeaders Additional HTTP headers to return with the response ()
      *
      * @return void
-     *
      */
     public function copyShared(CopyShared $copyShared, &$responseCode, array &$responseHeaders);
 
@@ -62,12 +59,11 @@ interface CopySharedApiInterface
      *
      * Check which instances the copy shared action would affect
      *
-     * @param  App\Model\CopyShared $copyShared  The copy shared action to dry run (required)
-     * @param  integer $responseCode     The HTTP response code to return
-     * @param  array   $responseHeaders  Additional HTTP headers to return with the response ()
+     * @param CopyShared $copyShared The copy shared action to dry run (required)
+     * @param integer $responseCode The HTTP response code to return
+     * @param array $responseHeaders Additional HTTP headers to return with the response ()
      *
      * @return App\Model\AcrossInstancesAction[]
-     *
      */
     public function copySharedDryRun(CopyShared $copyShared, &$responseCode, array &$responseHeaders);
 }

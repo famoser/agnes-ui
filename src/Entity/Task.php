@@ -6,6 +6,7 @@ namespace App\Entity;
 
 use App\Entity\Traits\IdTrait;
 use App\Entity\Traits\TargetTrait;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,14 +32,14 @@ class Task
     private $log;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(type="datetime")
      */
     private $executionStart;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(type="datetime", nullable=true)
      */
@@ -77,33 +78,33 @@ class Task
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getExecutionStart(): \DateTime
+    public function getExecutionStart(): DateTime
     {
         return $this->executionStart;
     }
 
     /**
-     * @param \DateTime $executionStart
+     * @param DateTime $executionStart
      */
-    public function setExecutionStart(\DateTime $executionStart): void
+    public function setExecutionStart(DateTime $executionStart): void
     {
         $this->executionStart = $executionStart;
     }
 
     /**
-     * @return \DateTime
+     * @return DateTime
      */
-    public function getExecutionTime(): \DateTime
+    public function getExecutionTime(): DateTime
     {
         return $this->executionTime;
     }
 
     /**
-     * @param \DateTime $executionTime
+     * @param DateTime $executionTime
      */
-    public function setExecutionTime(\DateTime $executionTime): void
+    public function setExecutionTime(DateTime $executionTime): void
     {
         $this->executionTime = $executionTime;
     }

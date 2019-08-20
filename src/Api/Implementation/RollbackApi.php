@@ -7,13 +7,10 @@ namespace App\Api\Implementation;
 use Agnes\Actions\AbstractAction;
 use Agnes\Actions\RollbackAction;
 use Agnes\AgnesFactory;
-use Agnes\Services\InstanceService;
-use App\Api\App;
 use App\Api\RollbackApiInterface;
-use App\Model\CopyShared;
-use App\Model\Instance;
 use App\Model\PendingReleaseInstance;
 use App\Model\Rollback;
+use Exception;
 
 class RollbackApi extends AgnesActionBase implements RollbackApiInterface
 {
@@ -28,7 +25,7 @@ class RollbackApi extends AgnesActionBase implements RollbackApiInterface
      *
      * @return void
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function rollback(Rollback $rollback, &$responseCode, array &$responseHeaders)
     {
@@ -47,7 +44,7 @@ class RollbackApi extends AgnesActionBase implements RollbackApiInterface
      *
      * @return PendingReleaseInstance[]
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function rollbackDryRun(Rollback $rollback, &$responseCode, array &$responseHeaders)
     {
@@ -82,7 +79,7 @@ class RollbackApi extends AgnesActionBase implements RollbackApiInterface
      * @param Rollback $configuration
      * @param RollbackAction $action
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     protected function createPayloads($configuration, $action): array
     {

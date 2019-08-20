@@ -29,9 +29,9 @@
 
 namespace App\Model;
 
-use Symfony\Component\Validator\Constraints as Assert;
-use JMS\Serializer\Annotation\Type;
 use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\Type;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class representing the AcrossInstancesAction model.
@@ -82,7 +82,7 @@ class AcrossInstancesAction
     /**
      * Sets source.
      *
-     * @param App\Model\Instance $source
+     * @param Instance $source
      *
      * @return $this
      */
@@ -106,7 +106,7 @@ class AcrossInstancesAction
     /**
      * Sets target.
      *
-     * @param App\Model\Instance $target
+     * @param Instance $target
      *
      * @return $this
      */

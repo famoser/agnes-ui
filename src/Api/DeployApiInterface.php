@@ -28,9 +28,7 @@
 
 namespace App\Api;
 
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Model\Deployment;
-use App\Model\Instance;
 
 /**
  * DeployApiInterface Interface Doc Comment
@@ -48,12 +46,11 @@ interface DeployApiInterface
      *
      * Deploy to environments
      *
-     * @param  App\Model\Deployment $deployment  The deployment to start (required)
-     * @param  integer $responseCode     The HTTP response code to return
-     * @param  array   $responseHeaders  Additional HTTP headers to return with the response ()
+     * @param Deployment $deployment The deployment to start (required)
+     * @param integer $responseCode The HTTP response code to return
+     * @param array $responseHeaders Additional HTTP headers to return with the response ()
      *
      * @return void
-     *
      */
     public function deploy(Deployment $deployment, &$responseCode, array &$responseHeaders);
 
@@ -62,12 +59,11 @@ interface DeployApiInterface
      *
      * Check which instances the deploy would affect
      *
-     * @param  App\Model\Deployment $deployment  The deployment to dry run (required)
-     * @param  integer $responseCode     The HTTP response code to return
-     * @param  array   $responseHeaders  Additional HTTP headers to return with the response ()
+     * @param Deployment $deployment The deployment to dry run (required)
+     * @param integer $responseCode The HTTP response code to return
+     * @param array $responseHeaders Additional HTTP headers to return with the response ()
      *
      * @return App\Model\Instance[]
-     *
      */
     public function deployDryRun(Deployment $deployment, &$responseCode, array &$responseHeaders);
 }

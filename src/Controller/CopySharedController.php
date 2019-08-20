@@ -29,15 +29,13 @@
 
 namespace App\Controller;
 
-use \Exception;
+use App\Api\CopySharedApiInterface;
+use Exception;
 use JMS\Serializer\Exception\RuntimeException as SerializerRuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Api\CopySharedApiInterface;
-use App\Model\AcrossInstancesAction;
-use App\Model\CopyShared;
 
 /**
  * CopySharedController Class Doc Comment
@@ -217,6 +215,8 @@ class CopySharedController extends Controller
     /**
      * Returns the handler for this API controller.
      * @return CopySharedApiInterface
+     * @throws Exception
+     * @throws Exception
      */
     public function getApiHandler()
     {
