@@ -4,6 +4,7 @@
 namespace App\Service;
 
 
+use Doctrine\Common\Annotations\IndexedReader;
 use FilesystemIterator;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -26,6 +27,11 @@ class ConfigService
     private $configRepository;
 
     /**
+     * @var string
+     */
+    private $configRepositoryFolder;
+
+    /**
      * ConfigService constructor.
      * @param KernelInterface $kernel
      * @param ParameterBagInterface $parameterBag
@@ -36,6 +42,7 @@ class ConfigService
 
         $this->targetRepository = $parameterBag->get("TARGET_REPOSITORY");
         $this->configRepository = $parameterBag->get("CONFIG_REPOSITORY");
+        $this->configRepositoryFolder = $parameterBag->get("CONFIG_REPOSITORY_FOLDER");
     }
 
     /**
@@ -108,6 +115,10 @@ class ConfigService
         $repoFolder = $this->repositoryPath . DIRECTORY_SEPARATOR . "config";
         $this->ensureRepositoryExists($repoFolder, $this->configRepository);
 
-        return $repoFolder;
+        if (strlen($this->configRepositoryFolder) === 0) {
+            return $repoFolder;
+        }
+
+        return $repoFolder . DIRECTORY_SEPARATOR . $this->configRepositoryFolder;
     }
 }
