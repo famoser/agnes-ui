@@ -1389,12 +1389,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/famoser/agnes.git",
-                "reference": "01b781763477a35969a093df540103d0f27db618"
+                "reference": "a631f48a9742e19072741b22dbc95455bcc29e2e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/famoser/agnes/zipball/01b781763477a35969a093df540103d0f27db618",
-                "reference": "01b781763477a35969a093df540103d0f27db618",
+                "url": "https://api.github.com/repos/famoser/agnes/zipball/a631f48a9742e19072741b22dbc95455bcc29e2e",
+                "reference": "a631f48a9742e19072741b22dbc95455bcc29e2e",
                 "shasum": ""
             },
             "require": {
@@ -1431,7 +1431,7 @@
                 }
             ],
             "description": "Creates & deploys releases safely to various environments.",
-            "time": "2019-08-20T09:24:07+00:00"
+            "time": "2019-08-20T11:39:29+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",

@@ -31,10 +31,6 @@ application:
       - 'cd $PREVIOUS_RELEASE_PATH && export MIGRATE_TO=$(php bin/console doctrine:migrations:latest)'
       - '{{php}} bin/console doctrine:migrations:migrate $MIGRATE_TO -n'
 
-    fixtures:
-      - 'composer install --no-interaction --optimize-autoloader --no-scripts'
-      - '{{php}} bin/console doctrine:fixtures:load -n'
-
 policies:
   strategy: unanimous # all matching policies must be valid
   allow_if_all_abstain: true # if no matching policy is found, the execution is allowed
@@ -56,21 +52,3 @@ policies:
         0: [dev]
         1: [production]
     - type: same_release
-
-  fixtures:
-    - type: whitelist
-      filter:
-        stages: [dev]
-
-events:
-  deploy:
-    before:
-      - filter:
-          environment: [staging]
-        command: copy_shared
-        arguments: { source: production }
-
-    after:
-      - filter:
-          environment: [dev]
-        command: fixtures
