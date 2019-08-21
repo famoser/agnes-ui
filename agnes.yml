@@ -14,6 +14,8 @@ application:
   files:
     - path: .env.local
       required: true
+    - path: .htpasswd
+      required: true
 
   scripts:
     release:
@@ -26,6 +28,10 @@ application:
       - 'find var -type d -print0 | xargs -0 chmod 0755'
       - 'find var -type f -print0 | xargs -0 chmod 0644'
       - '{{php}} bin/console doctrine:migrations:migrate -n'
+      - 'echo "AuthType Basic" >> public/.htaccess'
+      - 'echo "AuthName \"Restricted Content\"" >> public/.htaccess'
+      - 'echo "AuthUserFile $(pwd)/.htpasswd" >> public/.htaccess'
+      - 'echo "Require valid-user" >> public/.htaccess'
 
     rollback:
       - 'cd $PREVIOUS_RELEASE_PATH && export MIGRATE_TO=$(php bin/console doctrine:migrations:latest)'
